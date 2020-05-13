@@ -11,7 +11,7 @@ defmodule Bigplates.Core.Restaurant do
                 waive_after: nil
               }
             },
-            menus: MapSet.new(),
+            menus: %{},
             cuisine_types: %CuisineType{},
             payouts: [],
             orders: [],
@@ -36,23 +36,25 @@ defmodule Bigplates.Core.Restaurant do
   end
 
   def add_menu(restaurant, fields) do
-    updated_menus = restaurant.menus |> MapSet.put(Menu.new(fields))
-
+    new_menu = Menu.new(fields)
+    updated_menus = restaurant.menus |> Map.put(new_menu.slug, new_menu)
     restaurant |> Map.put(:menus, updated_menus)
   end
 
-  def remove_menu(restaurant, fields) do
-    updated_menus = restaurant.menus |> MapSet.delete(Menu.new(fields))
-
+  def remove_menu(restaurant, %{name: name} = fields) do
+    slug = Utility.create_slug(name)
+    updated_menus = restaurant.menus |> Map.delete(slug)
     restaurant |> Map.put(:menus, updated_menus)
   end
 
-  defp check_if_item_is_same(item_a, item_b, keyword) do
-    get_in(item_a, [keyword]) == get_in(item_b, [keyword])
+  def remove_menu(restaurant, %{slug: slug} = fields) do
+    updated_menus = restaurant.menus |> Map.delete(slug)
+    restaurant |> Map.put(:menus, updated_menus)
   end
 
   defp add_slug(restaurant, fields) do
     restaurant
     |> Map.put(:slug, Utility.create_slug(fields.name))
   end
+
 end
