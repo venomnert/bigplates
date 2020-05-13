@@ -9,9 +9,9 @@ defmodule Bigplates.Example do
 
   def create_portion_sizes() do
     [
-      %{serving_size: "small", serving_range: [1, 8], description: "serving sizes"},
-      %{serving_size: "medium", serving_range: [8, 15], description: "serving sizes"},
-      %{serving_size: "large", serving_range: [15, 25], description: "serving sizes"}
+      %{name: "small", price: 51, sale_price: 0, min: 1, max: 8, min_order: 1},
+      %{name: "medium", price: 75, sale_price: 0, min: 9, max: 15, min_order: 1},
+      %{name: "large", price: 100, sale_price: 0, min: 16, max: 25, min_order: 1}
     ]
     |> Enum.map(&PortionSize.new(&1))
   end
@@ -135,6 +135,9 @@ defmodule Bigplates.Example do
     |> Restaurant.add_menu(menu_3_fields)
     |> Restaurant.add_menu(menu_4_fields)
     |> Restaurant.remove_menu(menu_1_fields)
+  end
+
+  def create_menu_item() do
   end
 
   def setup() do
