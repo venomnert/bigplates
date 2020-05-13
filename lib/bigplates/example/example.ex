@@ -1,5 +1,5 @@
 defmodule Bigplates.Example do
-  alias Bigplates.Core.{User, DietaryPreference, PortionSize}
+  alias Bigplates.Core.{User, Restaurant, DietaryPreference, PortionSize}
   alias Bigplates.Core.Message.{MessageType}
 
   def create_message_types() do
@@ -77,34 +77,64 @@ defmodule Bigplates.Example do
       unit_number: nil
     }
 
-    new_user = User.new(%{
-                  account_type: :individual,
-                  email_address: "nert@rambuton.com",
-                  first_name: "nert",
-                  last_name: "siva",
-                  phone_number: "1231231231",
-                  company_name: nil,
-                  company_type: nil,
-                  company_size: nil,
-                  dietary_preference: [],
-                  notification_preference: [],
-                  favourite_menu_items: [],
-                  address: [],
-                  payments: [],
-                  orders: []
-                })
-              |> User.add_address(first_add)
-              |> User.add_address(second_add)
-              |> User.add_address(third_add)
-              |> User.add_address(fourth_add)
-              |> User.add_address(five_add)
-              |> User.add_address(first_add)
-              |> IO.inspect(label: "ADDED")
+    new_user =
+      User.new(%{
+        account_type: :individual,
+        email_address: "nert@rambuton.com",
+        first_name: "nert",
+        last_name: "siva",
+        phone_number: "1231231231",
+        company_name: nil,
+        company_type: nil,
+        company_size: nil,
+        dietary_preference: [],
+        notification_preference: [],
+        favourite_menu_items: [],
+        address: [],
+        payments: [],
+        orders: []
+      })
+      |> User.add_address(first_add)
+      |> User.add_address(second_add)
+      |> User.add_address(third_add)
+      |> User.add_address(fourth_add)
+      |> User.add_address(five_add)
+      |> User.add_address(first_add)
+      |> IO.inspect(label: "ADDED")
 
     new_user
     |> User.remove_address(hd(new_user.address))
     |> IO.inspect(label: "REMOVED")
+  end
 
+  def create_restaurants() do
+    menu_1_fields = %{name: "Breakfast", meal_category: :breakfast}
+    menu_2_fields = %{name: "Scoops", meal_category: nil}
+    menu_3_fields = %{name: "Dough Pops", meal_category: :lunch}
+    menu_4_fields = %{name: "Dough Truffles", meal_category: nil}
+
+    %{
+      name: "TOE",
+      requirements: %{
+        minimum_time: 24,
+        minimum_order: 300,
+        delivery_fee: %{
+          fee: 20,
+          waive_after: 1000
+        }
+      },
+      cuisine_types: [filipino: true, greek: true, italian: true],
+      payouts: [],
+      orders: [],
+      address: [],
+      payments: []
+    }
+    |> Restaurant.new()
+    |> Restaurant.add_menu(menu_1_fields)
+    |> Restaurant.add_menu(menu_2_fields)
+    |> Restaurant.add_menu(menu_3_fields)
+    |> Restaurant.add_menu(menu_4_fields)
+    |> Restaurant.remove_menu(menu_1_fields)
   end
 
   def setup() do
