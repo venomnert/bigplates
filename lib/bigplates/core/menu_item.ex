@@ -1,9 +1,10 @@
 defmodule Bigplates.Core.MenuItem do
 
+  @price_types [:single, :per_person]
+
   defstruct name: nil,
-            price: nil,
-            sale_price: nil,
             description: nil,
+            price_type: nil,
             img: [],
             portion_sizes: [],
             published: true,
