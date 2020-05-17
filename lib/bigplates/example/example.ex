@@ -100,11 +100,9 @@ defmodule Bigplates.Example do
       |> User.add_address(fourth_add)
       |> User.add_address(five_add)
       |> User.add_address(first_add)
-      |> IO.inspect(label: "ADDED")
 
     new_user
     |> User.remove_address(hd(new_user.address))
-    |> IO.inspect(label: "REMOVED")
   end
 
   def create_restaurants() do
