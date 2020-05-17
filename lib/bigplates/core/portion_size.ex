@@ -1,6 +1,4 @@
 defmodule Bigplates.Core.PortionSize do
-
-
   """
     1. small: 1 - 8 people
     2. medium: 8 - 15 people
@@ -14,12 +12,9 @@ defmodule Bigplates.Core.PortionSize do
     |> generate_description("people")
   end
 
-
   defp generate_description(portion_size, entity) do
     description = "#{portion_size.name}: #{portion_size.min} - #{portion_size.max} #{entity}"
 
     portion_size |> Map.put(:description, description)
   end
-
 end
-

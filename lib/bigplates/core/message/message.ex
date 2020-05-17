@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.Message do
-
   defstruct message: nil,
             type: nil,
             order: nil,
@@ -8,5 +7,4 @@ defmodule Bigplates.Core.Message do
   def create(fields) do
     struct!(__MODULE__, fields)
   end
-
 end

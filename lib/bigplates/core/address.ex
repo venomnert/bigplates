@@ -36,14 +36,14 @@ defmodule Bigplates.Core.Address do
   end
 
   def remove_address(main_entity, %__MODULE__{} = address_to_remove) do
-      main_entity.address
-      |> Enum.reject(&is_address_hash_equal(&1, address_to_remove))
+    main_entity.address
+    |> Enum.reject(&is_address_hash_equal(&1, address_to_remove))
   end
-
 
   defp get_address_hash(%__MODULE__{} = address), do: address.address_hash
 
-  defp is_address_hash_equal(address_1, address_2), do: address_1.address_hash == address_2.address_hash
+  defp is_address_hash_equal(address_1, address_2),
+    do: address_1.address_hash == address_2.address_hash
 
   defp format_postal_code(postal_code) do
     postal_code

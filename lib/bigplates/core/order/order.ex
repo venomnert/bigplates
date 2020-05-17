@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.Order do
-
   """
     * delivery_time_window_minutes: [low, high]
     * status: [:draft, :paid, :refunded]
@@ -28,9 +27,7 @@ defmodule Bigplates.Core.Order do
             transactions: [],
             total_items: []
 
-
   def create(fields) do
     struct!(__MODULE__, fields)
   end
-
 end

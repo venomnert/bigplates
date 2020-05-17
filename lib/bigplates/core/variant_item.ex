@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.VariantItem do
-
   defstruct ~w[name price description]a
 
   def new(fields) do

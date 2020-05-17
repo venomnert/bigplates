@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.Order.Transaction do
-
   """
     * type: [:add | :subtract]
   """
@@ -16,10 +15,8 @@ defmodule Bigplates.Core.Order.Transaction do
   end
 
   def add_variant(menu_item, fields) do
-
   end
 
   def calculate_total_price(transaction) do
-    
   end
 end

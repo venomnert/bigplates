@@ -56,5 +56,4 @@ defmodule Bigplates.Core.Restaurant do
     restaurant
     |> Map.put(:slug, Utility.create_slug(fields.name))
   end
-
 end
