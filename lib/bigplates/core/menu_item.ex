@@ -1,15 +1,14 @@
 defmodule Bigplates.Core.MenuItem do
-
-  alias Bigplates.Core.PortionSize
-
   @price_types [:single, :per_person]
+
+  alias Bigplates.Core.{PortionSize, Variant}
 
   defstruct name: nil,
             description: nil,
             price_type: nil,
+            published: true,
             img: [],
             portion_sizes: %{},
-            published: true,
             variants: []
 
   def new(fields) do
@@ -22,7 +21,9 @@ defmodule Bigplates.Core.MenuItem do
     menu_item |> Map.put(portion_size.name, portion_size)
   end
 
-  def add_variant(menu_item, fields) do
+  def add_variant(menu_item, {variant_fields, variant_items}) do
+    updated_variants = [Variant.new({variant_fields, variant_items})] ++ menu_item.variants
 
+    menu_item |> Map.put(:variants, updated_variants)
   end
 end
