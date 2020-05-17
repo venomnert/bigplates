@@ -1,4 +1,7 @@
 defmodule Bigplates.Core.Variant do
+
+  @type [:single, :multiple]
+
   """
     * type: [:single, :multiple]
     * options: %{
@@ -14,7 +17,17 @@ defmodule Bigplates.Core.Variant do
             },
             required: false
 
-  def create(fields) do
+  def new(fields) do
     struct!(__MODULE__, fields)
+    |> enforce_single_limit()
+    |> add_required()
+  end
+
+  def enforce_single_limit(variant, fields) do
+
+  end
+
+  def add_required(variant, fields) do
+    
   end
 end
