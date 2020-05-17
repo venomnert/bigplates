@@ -1,5 +1,5 @@
 defmodule Bigplates.Example do
-  alias Bigplates.Core.{User, Restaurant, DietaryPreference, PortionSize}
+  alias Bigplates.Core.{User, Restaurant, Variant, PortionSize}
   alias Bigplates.Core.Message.{MessageType}
 
   def create_message_types() do
@@ -136,12 +136,28 @@ defmodule Bigplates.Example do
   end
 
   def create_menu_item() do
+    variant_item_1 = %{name: "Virginia Honey Ham \u0026 Smoked Turkey Breast", price: 13, description: "HMMM yummmy" }
+    variant_item_2 = %{name: "Virginia Honey Ham \u0026 Premium Roast Beef", price: 2.50, description: "I really like this"}
+    variant_item_3 = %{name: "Ham, Genoa Salami and Pepperoni", price: 10, description: "Italian flavour"}
+    variant_item_4 = %{name: "Premium Roast Beef \u0026 Smoked Turkey Breast", price: 0, description: "What is this thing you are talkinga bout"}
+    variant_item_5 = %{name: "Veggie", price: 2.75, description: "Bland Bland Bland Veggie"}
+
+    variant_1 = Variant.new(%{name: "Standard Sub", type: :single, max_options: 1, required: true})
+                |> Variant.add_multiple_variant_items([variant_item_1, variant_item_2, variant_item_3, variant_item_4, variant_item_5])
+    variant_2 = Variant.new(%{name: "Chips", type: :single, max_options: 2, required: false})
+                |> Variant.add_multiple_variant_items([variant_item_1, variant_item_2, variant_item_3, variant_item_4, variant_item_5])
+    variant_3 = Variant.new(%{name: "Cookie", type: :multiple, max_options: 2, required: false})
+                |> Variant.add_multiple_variant_items([variant_item_1, variant_item_2, variant_item_3, variant_item_4, variant_item_5])
+    variant_4 = Variant.new(%{name: "Drinks", type: :multiple, max_options: 1, required: true})
+                |> Variant.add_multiple_variant_items([variant_item_1, variant_item_2, variant_item_3, variant_item_4, variant_item_5])
+
+    [variant_1, variant_2, variant_3, variant_4]
   end
 
   def setup() do
-    messages = create_message_types()
-    portion_sizes = create_portion_sizes()
-    dietary_preferences = create_dietary_preferences()
+    _messages = create_message_types()
+    _portion_sizes = create_portion_sizes()
+    _dietary_preferences = create_dietary_preferences()
     create_users()
   end
 end
