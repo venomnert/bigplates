@@ -21,7 +21,6 @@ defmodule Bigplates.Core.Restaurant do
 
   def new(fields) do
     struct!(__MODULE__, fields)
-    |> add_cuisine(fields)
     |> add_slug(fields)
   end
 
@@ -30,9 +29,17 @@ defmodule Bigplates.Core.Restaurant do
     |> struct!(fields)
   end
 
-  def add_cuisine(restaurant, fields) do
+  def add_cuisine(restaurant, %CuisineType{} = cuisine_types) do
     restaurant
-    |> Map.put(:cuisine_types, CuisineType.new(fields.cuisine_types))
+    |> Map.put(:cuisine_types, cuisine_types)
+  end
+
+  def update_cuisine(restaurant, fields) do
+    updated_cuisine_types =
+      restaurant |> Map.get(:cuisine_types, %CuisineType{}) |> struct!(fields)
+
+    restaurant
+    |> Map.put(:cuisine_types, updated_cuisine_types)
   end
 
   def add_menu(restaurant, fields) do
