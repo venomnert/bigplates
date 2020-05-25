@@ -80,7 +80,7 @@ defmodule Bigplates.Core.User do
   @doc """
     Update active user info
   """
-  def update_info(%{hidden: false} = user, fields) do
+  def update_info(user, fields) do
     updated_fields = clean_company_data(fields)
 
     user
@@ -90,14 +90,14 @@ defmodule Bigplates.Core.User do
   @doc """
     Soft delete users
   """
-  def delete_user(%{hidden: false} = user) do
+  def delete_user(user) do
     user |> Map.put(:hidden, true)
   end
 
   @doc """
     Add new address to active users
   """
-  def add_address(%{hidden: false} = user, %Address{} = address) do
+  def add_address(user, %Address{} = address) do
     updated_address = Address.add_unique_address(user, address)
 
     user |> Map.put(:address, updated_address)
@@ -106,19 +106,19 @@ defmodule Bigplates.Core.User do
   @doc """
     Delete existing address from active users
   """
-  def remove_address(%{hidden: false} = user, %Address{} = address_to_remove) do
+  def remove_address(user, %Address{} = address_to_remove) do
     updated_address = Address.remove_address(user, address_to_remove)
 
     user |> Map.put(:address, updated_address)
   end
 
-  def add_order(%{hidden: false} = user, order) do
+  def add_order(user, order) do
   end
 
-  def add_payment(%{hidden: false} = user, payment) do
+  def add_payment(user, payment) do
   end
 
-  def favourite_menu_item(%{hidden: false} = user, item) do
+  def favourite_menu_item(user, item) do
   end
 
   defp clean_company_data(%{account_type: :company} = fields), do: fields
