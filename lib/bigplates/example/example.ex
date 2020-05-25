@@ -181,15 +181,28 @@ defmodule Bigplates.Example do
       min_order: 1
     })
     |> MenuItem.add_variant({variant_item_1, variant_items})
-
   end
 
   def create_combo_item() do
     menu_item_1 = create_menu_item()
-    ComboItem.new(%{name: "Family Combo", price: 50, sale_price: 30, description: "Great for family lunch", cutlery: true})
+
+    ComboItem.new(%{
+      name: "Family Combo",
+      price: 50,
+      sale_price: 30,
+      description: "Great for family lunch",
+      cutlery: true
+    })
     |> ComboItem.add_menu_item(menu_item_1)
     |> ComboItem.add_menu_item(menu_item_1)
-    |> ComboItem.add_portion_size(%{name: "small", price: 51, sale_price: 0, min: 1, max: 8, min_order: 1})
+    |> ComboItem.add_portion_size(%{
+      name: "small",
+      price: 51,
+      sale_price: 0,
+      min: 1,
+      max: 8,
+      min_order: 1
+    })
   end
 
   def create_variants() do
@@ -261,5 +274,4 @@ defmodule Bigplates.Example do
 
     [variant_1, variant_2, variant_3, variant_4]
   end
-
 end
