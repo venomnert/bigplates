@@ -17,6 +17,7 @@ defmodule Bigplates.Core.Restaurant do
             orders: [],
             address: [],
             payments: [],
+            hidden: false,
             slug: nil
 
   def new(fields) do
@@ -57,6 +58,13 @@ defmodule Bigplates.Core.Restaurant do
   def remove_menu(restaurant, %{slug: slug} = fields) do
     updated_menus = restaurant.menus |> Map.delete(slug)
     restaurant |> Map.put(:menus, updated_menus)
+  end
+
+  @doc """
+    Soft delete restaurant
+  """
+  def delete_restaurant(%{hidden: false} = restaurant) do
+    restaurant |> Map.put(:hidden, true)
   end
 
   defp add_slug(restaurant, fields) do
