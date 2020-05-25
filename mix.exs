@@ -16,7 +16,6 @@ defmodule Bigplates.MixProject do
       docs: [
         # The main page in the docs
         main: "Bigplates",
-        logo: "path/to/logo.png",
         extras: ["README.md"]
       ]
     ]
