@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.ComboItem do
-
   alias Bigplates.Core.{MenuItem, PortionSize, Variant}
 
   defstruct name: nil,

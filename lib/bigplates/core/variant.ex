@@ -1,5 +1,4 @@
 defmodule Bigplates.Core.Variant do
-  
   @variant_types [:single, :multiple]
 
   alias Bigplates.Core.VariantItem
