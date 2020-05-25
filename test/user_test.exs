@@ -54,6 +54,7 @@ defmodule UserTest do
       |> assert_company_user_fields_with_profile(updated_fields_3)
     end
 
+    # Since this throws an error, should this be handled by Boundry layer?
     test "delete individual user" do
       fields = user_fields()
 
@@ -84,6 +85,7 @@ defmodule UserTest do
       |> assert_company_user_fields_with_profile(fields)
     end
 
+    # Since this throws an error, should this be handled by Boundry layer?
     test "delete company user" do
       fields =
         %{account_type: :company, company_name: "Rambuton", company_size: 5000} |> user_fields()
