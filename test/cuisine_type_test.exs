@@ -7,7 +7,7 @@ defmodule CuisineTypeTest do
 
     # Since this throws an error, should this be handled by Boundry layer?
     test "Invalid cuisine type to restaurant", %{restaurant: _restaurant} do
-      cuisinine_fields(%{english: :true, french: :false})
+      cuisinine_fields(%{english: true, french: false})
       |> assert_cuisine_types_error()
     end
   end
