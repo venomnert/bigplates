@@ -1,9 +1,6 @@
 defmodule Bigplates.Core.Order do
-  """
-    * delivery_time_window_minutes: [low, high]
-    * status: [:draft, :paid, :refunded]
-
-  """
+  @delivery_time_window_minutes [:low, :high]
+  @status [:draft, :paid, :refunded]
 
   defstruct user: nil,
             address: nil,

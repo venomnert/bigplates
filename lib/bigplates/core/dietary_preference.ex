@@ -1,7 +1,5 @@
 defmodule Bigplates.Core.DietaryPreference do
-  """
-    * dietary_preference: [:halal, :egg_free, :dairy_free, :vegan, :gluten_free, :nut_free, :vegetarian]
-  """
+  @dietary_preference [:halal, :egg_free, :dairy_free, :vegan, :gluten_free, :nut_free, :vegetarian]
 
   defstruct name: nil
 

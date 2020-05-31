@@ -1,7 +1,5 @@
 defmodule Bigplates.Core.Message.MessageType do
-  """
-    * type: [:new_order, :update, :ready, :cancelled_order]
-  """
+  @message_type [:new_order, :update, :ready, :cancelled_order]
 
   defstruct message_type: nil
 

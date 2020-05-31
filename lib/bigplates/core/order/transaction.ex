@@ -1,7 +1,5 @@
 defmodule Bigplates.Core.Order.Transaction do
-  """
-    * type: [:add | :subtract]
-  """
+  @transaction_type [:add, :subtract]
 
   defstruct type: nil,
             quantity: nil,
