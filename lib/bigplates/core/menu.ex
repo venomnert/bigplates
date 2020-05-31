@@ -15,11 +15,16 @@ defmodule Bigplates.Core.Menu do
 
   def get_meal_categories(), do: @meal_categories
 
+  def update_menu(menu, fields) do
+    new_menu = fields |> new()
+    menu |> Map.merge(new_menu)
+  end
+
   defp add_valid_category(fields) do
     is_valid_category(fields.meal_category)
     |> case do
       true -> fields.meal_category
-      false -> Utility.create_slug(fields.name)
+      false -> nil
     end
   end
 

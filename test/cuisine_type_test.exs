@@ -13,7 +13,7 @@ defmodule CuisineTypeTest do
   end
 
   defp restaurant(context) do
-    restaurant = create_restaurant() |> Restaurant.new()
+    restaurant = create_restaurant(%{}) |> Restaurant.new()
     {:ok, Map.put(context, :restaurant, restaurant)}
   end
 
