@@ -130,10 +130,11 @@ defmodule Bigplates.Core.User do
   defp validate_company_size(%{company_size: company_size} = user) do
     updated_company_size =
       cond do
-        is_binary(company_size) -> 0
-        nil -> 0
         is_float(company_size) -> Kernel.trunc(company_size)
         is_integer(company_size) -> company_size
+        is_binary(company_size) -> 0
+        is_boolean(company_size) -> 0
+        nil -> 0
       end
 
     user |> Map.put(:company_size, updated_company_size)
