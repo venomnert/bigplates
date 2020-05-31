@@ -1,18 +1,18 @@
 defmodule Bigplates.Core.Restaurant do
-  alias Bigplates.Core.{CuisineType, Menu}
+  alias Bigplates.Core.{CuisineType, Menu, Address}
   alias Bigplates.Utility
 
   defstruct name: nil,
             requirements: %{
               minimum_time: 0,
-              minimum_order: 0,
+              minimum_order: 0
             },
             delivery_fee: %{
               fee: 0,
               waive_after: 0
             },
-            menus: %{},
             cuisine_types: %CuisineType{},
+            menus: %{},
             payouts: [],
             orders: [],
             address: [],
@@ -45,20 +45,13 @@ defmodule Bigplates.Core.Restaurant do
     |> Map.put(:cuisine_types, updated_cuisine_types)
   end
 
-  def add_menu(restaurant, fields) do
-    new_menu = Menu.new(fields)
-    updated_menus = restaurant.menus |> Map.put(new_menu.slug, new_menu)
+  def add_menu(restaurant, %Menu{} = menu) do
+    updated_menus = restaurant.menus |> Map.put(menu.slug, menu)
     restaurant |> Map.put(:menus, updated_menus)
   end
 
-  def remove_menu(restaurant, %{name: name} = fields) do
-    slug = Utility.create_slug(name)
-    updated_menus = restaurant.menus |> Map.delete(slug)
-    restaurant |> Map.put(:menus, updated_menus)
-  end
-
-  def remove_menu(restaurant, %{slug: slug} = fields) do
-    updated_menus = restaurant.menus |> Map.delete(slug)
+  def delete_menu(restaurant, %Menu{} = menu) do
+    updated_menus = restaurant.menus |> Map.delete(menu.slug)
     restaurant |> Map.put(:menus, updated_menus)
   end
 
@@ -67,6 +60,24 @@ defmodule Bigplates.Core.Restaurant do
   """
   def delete_restaurant(%{hidden: false} = restaurant) do
     restaurant |> Map.put(:hidden, true)
+  end
+
+  @doc """
+    Add new address to active restaurant
+  """
+  def add_address(restaurant, %Address{} = address) do
+    updated_address = Address.add_unique_address(restaurant, address)
+
+    restaurant |> Map.put(:address, updated_address)
+  end
+
+  @doc """
+    Delete existing address from active restaurant
+  """
+  def remove_address(restaurant, %Address{} = address_to_remove) do
+    updated_address = Address.remove_address(restaurant, address_to_remove)
+
+    restaurant |> Map.put(:address, updated_address)
   end
 
   defp add_slug(restaurant, fields) do

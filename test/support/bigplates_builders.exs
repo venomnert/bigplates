@@ -9,10 +9,44 @@ defmodule BigplatesBuilder do
 
   alias Bigplates.Core.{User, Address, Restaurant, CuisineType, Menu}
 
+  def menu_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        name: "Breakfast",
+        meal_category: :breakfast
+      },
+      overrides
+    )
+  end
+
   def restaurant_fields(overrides \\ %{}) do
     Map.merge(
       %{
         name: "TOE"
+      },
+      overrides
+    )
+  end
+
+  def restaurant_requirement_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        requirements: %{
+          minimum_time: 24,
+          minimum_order: 300
+        }
+      },
+      overrides
+    )
+  end
+
+  def restaurant_delivery_fee_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        delivery_fee: %{
+          fee: 20,
+          waive_after: 1000
+        }
       },
       overrides
     )
@@ -87,11 +121,35 @@ defmodule BigplatesBuilder do
     )
   end
 
-  def create_restaurant(overrides \\ %{}) do
+  def create_restaurant(overrides) when is_map(overrides) do
     Map.merge(
       restaurant_fields(),
       overrides
     )
+  end
+
+  def create_restaurant(:no_requirements) do
+    %{
+      delivery_fee: restaurant_delivery_fee_fields(),
+      cuisine_types: CuisineType.new(cuisinine_fields())
+    }
+    |> create_restaurant()
+  end
+
+  def create_restaurant(:no_delivery_fee) do
+    %{
+      requirements: restaurant_requirement_fields(),
+      cuisine_types: CuisineType.new(cuisinine_fields())
+    }
+    |> create_restaurant()
+  end
+
+  def create_restaurant(:no_cuisine_type) do
+    %{
+      requirements: restaurant_requirement_fields(),
+      delivery_fee: restaurant_delivery_fee_fields()
+    }
+    |> create_restaurant()
   end
 
   def address_generator(qty) do
