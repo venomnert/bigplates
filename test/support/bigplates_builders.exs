@@ -1,13 +1,64 @@
 defmodule BigplatesBuilder do
   defmacro __using__(_options) do
     quote do
-      alias Bigplates.Core.{User, Address, Restaurant, CuisineType, Menu}
+      alias Bigplates.Core.{
+        User,
+        Address,
+        Restaurant,
+        CuisineType,
+        Menu,
+        MenuItem,
+        PortionSize,
+        Variant
+      }
+
       alias Bigplates.Utility
       import BigplatesBuilder, only: :functions
     end
   end
 
-  alias Bigplates.Core.{User, Address, Restaurant, CuisineType, Menu}
+  alias Bigplates.Core.{Address, CuisineType}
+
+  def variant_fields(overrides \\ %{}) do
+    Map.merge(
+      %{name: "Standard Sub", type: :single, max_options: 1, required: true},
+      overrides
+    )
+  end
+
+  def variant_option_fields(overrides \\ %{}) do
+    [
+      Map.merge(
+        %{
+          name: "Virginia Honey Ham \u0026 Smoked Turkey Breast",
+          price: 13,
+          description: "HMMM yummmy"
+        },
+        overrides
+      )
+    ]
+  end
+
+  def portion_size_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        name: :small,
+        price: 51,
+        sale_price: 0
+      },
+      overrides
+    )
+  end
+
+  def menu_items_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        name: "Burger",
+        description: "Our famous burger. Customize it to your preference."
+      },
+      overrides
+    )
+  end
 
   def menu_fields(overrides \\ %{}) do
     Map.merge(

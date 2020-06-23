@@ -34,7 +34,7 @@ defmodule MenuTest do
     end
   end
 
-  describe "test menu category" do
+  describe "menu category" do
     test "invalid category" do
       menu_field = menu_fields(%{name: "testing dfdsaf !@#!", meal_category: :brunch})
 
@@ -42,6 +42,9 @@ defmodule MenuTest do
       |> Menu.new()
       |> assert_menu_category(menu_field)
     end
+  end
+
+  describe "CRUD menu item" do
   end
 
   defp assert_menu(menu, fields) do
