@@ -89,13 +89,13 @@ defmodule VariantTest do
     end
   end
 
-  describe "testing max options" do
-    test "max >= 2 and max <= max_options " do
+  describe "max options" do
+    test "max >= 2 and max <= max_options" do
       variant_fields_1 = variant_fields(%{type: :multiple, max_options: 2})
       variant_fields_2 = variant_fields(%{type: :multiple, max_options: 3})
 
-      variant_1 = {variant_fields_1, [%{},%{}]}
-      variant_2 = {variant_fields_2, [%{},%{},%{},%{}]}
+      variant_1 = {variant_fields_1, [%{}, %{}]}
+      variant_2 = {variant_fields_2, [%{}, %{}, %{}, %{}]}
 
       variant_1
       |> Variant.new()
@@ -108,101 +108,118 @@ defmodule VariantTest do
       |> assert_max_options(3)
     end
 
-    # max > min_options and max <= max_options -> variant
-    # max > max_options -> variant |> Map.put(:max_options, max_options)
-    # max < min_options -> variant |> Map.put(:max_options, min_options)
+    test "max > max_options" do
+      variant_fields_1 = variant_fields(%{type: :multiple, max_options: 5})
 
+      variant_1 = {variant_fields_1, [%{}, %{}, %{}]}
+
+      variant_1
+      |> Variant.new()
+      |> assert_max_options(3)
+    end
+
+    test "max < min_options" do
+      variant_fields_1 = variant_fields(%{type: :multiple, max_options: 1})
+
+      variant_1 = {variant_fields_1, [%{}, %{}, %{}]}
+
+      variant_1
+      |> Variant.new()
+      |> assert_max_options(2)
+    end
   end
 
-  # describe "create & update variant options" do
-  #   test "create variant field" do
-  #     variant_fields = variant_fields()
-  #     variant = {variant_fields, []}
+  describe "create & add variant items" do
+    test "create single variant" do
+      variant_fields = variant_fields()
+      options = [variant_item_fields(), variant_item_fields(%{name: "new name"})]
+      variant = {variant_fields, options}
 
-  #     variant
-  #     |> Variant.new()
-  #     |> assert_variant_fields(variant)
-  #   end
+      new_option = [variant_item_fields(%{name: "added new one", price: 50})]
+      updated_variant = {variant_fields, new_option ++ options}
 
-  #   test "update variant field single to multiple" do
-  #     variant_fields_1 = variant_fields()
-  #     variant_fields_2 = variant_fields(%{type: :multiple, max_options: 2})
+      variant
+      |> Variant.new()
+      |> assert_variant_fields(variant)
+      |> Variant.add_options(new_option)
+      |> assert_variant_fields(updated_variant)
+    end
 
-  #     variant_1 = {variant_fields_1, []}
-  #     variant_2 = {variant_fields_2, [%{}, %{}]}
+    test "create multiple variant" do
+      variant_fields = variant_fields(%{type: :multiple, max_options: 2})
 
-  #     variant_1
-  #     |> Variant.new()
-  #     |> assert_variant_fields(variant_1)
-  #     |> Variant.update(variant_2)
-  #     |> assert_variant_fields(variant_2)
-  #   end
+      options = [
+        variant_item_fields(),
+        variant_item_fields(%{name: "new name"}),
+        variant_item_fields(%{
+          name: "Medium rare",
+          price: 0,
+          description: "Medium rare on the grill."
+        })
+      ]
 
-  #   test "update variant field multiple to multiple" do
-  #     variant_fields_1 = variant_fields()
-  #     variant_fields_2 = variant_fields(%{type: :multiple, max_options: 2})
+      variant = {variant_fields, options}
 
-  #     variant_1 = {variant_fields_1, []}
-  #     variant_2 = {variant_fields_2, [%{}, %{}]}
+      new_option = [
+          variant_item_fields(%{name: "new_1", price: 50}),
+          variant_item_fields(%{name: "new_2", price: 10}),
+          variant_item_fields(%{name: "new_3", price: 0})
+        ]
+      updated_variant = {variant_fields, new_option ++ options}
 
-  #     variant_1
-  #     |> Variant.new()
-  #     |> assert_variant_fields(variant_1)
-  #     |> Variant.update(variant_2)
-  #     |> assert_variant_fields(variant_2)
-  #   end
+      variant
+      |> Variant.new()
+      |> assert_variant_fields(variant)
+      |> Variant.add_options(new_option)
+      |> assert_variant_fields(updated_variant)
+    end
+  end
 
-  #   test "update variant field multiple to single" do
-  #     variant_fields_1 = variant_fields()
-  #     variant_fields_2 = variant_fields(%{type: :multiple, max_options: 2})
+  describe "update variant items" do
+    test "create single variant" do
+      variant_fields = variant_fields()
+      options = [variant_item_fields(), variant_item_fields(%{name: "new name"})]
+      variant = {variant_fields, options}
 
-  #     variant_1 = {variant_fields_1, []}
-  #     variant_2 = {variant_fields_2, [%{}, %{}]}
+      new_option = [variant_item_fields(%{name: "added new one", price: 50})]
+      updated_variant = {variant_fields, new_option ++ options}
 
-  #     variant_1
-  #     |> Variant.new()
-  #     |> assert_variant_fields(variant_1)
-  #     |> Variant.update(variant_2)
-  #     |> assert_variant_fields(variant_2)
-  #   end
+      variant
+      |> Variant.new()
+      |> assert_variant_fields(variant)
+      |> Variant.add_options(new_option)
+      |> assert_variant_fields(updated_variant)
+    end
 
-  #   test "update variant field single to single" do
-  #     variant_fields_1 = variant_fields()
-  #     variant_fields_2 = variant_fields(%{type: :multiple, max_options: 2})
+    test "create multiple variant" do
+      variant_fields = variant_fields(%{type: :multiple, max_options: 2})
 
-  #     variant_1 = {variant_fields_1, []}
-  #     variant_2 = {variant_fields_2, [%{}, %{}]}
+      options = [
+        variant_item_fields(),
+        variant_item_fields(%{name: "new name"}),
+        variant_item_fields(%{
+          name: "Medium rare",
+          price: 0,
+          description: "Medium rare on the grill."
+        })
+      ]
 
-  #     variant_1
-  #     |> Variant.new()
-  #     |> assert_variant_fields(variant_1)
-  #     |> Variant.update(variant_2)
-  #     |> assert_variant_fields(variant_2)
-  #   end
-  # end
+      variant = {variant_fields, options}
 
-  # describe "create & update variant to menu" do
-  #   test "create variant" do
-  #     variant_fields = variant_fields()
-  #     variant_option_fields = variant_option_fields()
-  #     variant = {variant_fields, variant_option_fields} |> Variant.new()
+      new_option = [
+          variant_item_fields(%{name: "new_1", price: 50}),
+          variant_item_fields(%{name: "new_2", price: 10}),
+          variant_item_fields(%{name: "new_3", price: 0})
+        ]
+      updated_variant = {variant_fields, new_option ++ options}
 
-  #     menu_field
-  #     |> Menu.new()
-  #     |> assert_menu(menu_field)
-  #   end
-
-  #   test "update variant" do
-  #     menu_field_1 = menu_fields()
-  #     menu_field_2 = menu_fields(%{name: "Lunch Special", meal_category: :lunch})
-
-  #     menu_field_1
-  #     |> Menu.new()
-  #     |> assert_menu(menu_field_1)
-  #     |> Menu.update_menu(menu_field_2)
-  #     |> assert_menu(menu_field_2)
-  #   end
-  # end
+      variant
+      |> Variant.new()
+      |> assert_variant_fields(variant)
+      |> Variant.add_options(new_option)
+      |> assert_variant_fields(updated_variant)
+    end
+  end
 
   defp assert_variant_fields(variant, {variant_fields, variant_option_fields}) do
     assert variant_fields.name == variant.name

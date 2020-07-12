@@ -21,7 +21,6 @@ defmodule Bigplates.Core.Variant do
     |> enforce_multiple_limit()
   end
 
-
   def add_options(%__MODULE__{} = variant, variant_items) do
     variant
     |> add_multiple_variant_items(variant_items)
@@ -52,11 +51,10 @@ defmodule Bigplates.Core.Variant do
     min_options = 2
 
     cond do
-      max >= 2 and max <= max_options -> variant
-      max > min_options and max <= max_options -> variant
+      max >= min_options and max <= max_options -> variant
       max > max_options -> variant |> Map.put(:max_options, max_options)
       max < min_options -> variant |> Map.put(:max_options, min_options)
-      true -> variant |> Map.put(:max_options, min_options)
+      true -> variant
     end
 
   end

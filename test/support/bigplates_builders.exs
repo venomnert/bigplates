@@ -9,7 +9,8 @@ defmodule BigplatesBuilder do
         Menu,
         MenuItem,
         PortionSize,
-        Variant
+        Variant,
+        VariantItem
       }
 
       alias Bigplates.Utility
@@ -26,17 +27,15 @@ defmodule BigplatesBuilder do
     )
   end
 
-  def variant_option_fields(overrides \\ %{}) do
-    [
-      Map.merge(
-        %{
-          name: "Virginia Honey Ham \u0026 Smoked Turkey Breast",
-          price: 13,
-          description: "HMMM yummmy"
-        },
-        overrides
-      )
-    ]
+  def variant_item_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        name: "Virginia Honey Ham \u0026 Smoked Turkey Breast",
+        price: 13,
+        description: "HMMM yummmy"
+      },
+      overrides
+    )
   end
 
   def portion_size_fields(overrides \\ %{}) do
