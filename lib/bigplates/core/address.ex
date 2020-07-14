@@ -1,6 +1,6 @@
 defmodule Bigplates.Core.Address do
   @moduledoc """
-    Address is used to store location information for Bigplates.Core.User and Bigplates.Core.Restaurants.
+    Address is used to store location information for Bigplates.Core.User and Bigplates.Core.Restaurant.
   """
 
   defstruct ~w[address_hash street city province postal_code special_instructions unit_number]a
