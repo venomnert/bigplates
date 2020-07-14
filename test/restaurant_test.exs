@@ -214,7 +214,7 @@ defmodule RestaurantTest do
 
       assert Enum.empty?(restaurant_address.address) == false
 
-      removed_restaurant_address = restaurant_address |> Restaurant.remove_address(new_address)
+      removed_restaurant_address = restaurant_address |> Restaurant.delete_address(new_address)
 
       assert Enum.empty?(removed_restaurant_address.address) == true
     end
@@ -228,7 +228,7 @@ defmodule RestaurantTest do
       restaurant_address =
         restaurant
         |> Restaurant.add_address(first_address)
-        |> Restaurant.remove_address(unknown_address)
+        |> Restaurant.delete_address(unknown_address)
         |> Map.get(:address)
 
       assert Enum.empty?(restaurant_address) == false
@@ -344,7 +344,7 @@ defmodule RestaurantTest do
   end
 
   defp assert_menu_qty(restaurant, qty) do
-    menus = restaurant.menus |> Map.keys
+    menus = restaurant.menus |> Map.keys()
     assert length(menus) == qty
     restaurant
   end

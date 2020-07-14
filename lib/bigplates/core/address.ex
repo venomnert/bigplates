@@ -57,7 +57,7 @@ defmodule Bigplates.Core.Address do
     |> Enum.uniq_by(&get_address_hash(&1))
   end
 
-  def remove_address(main_entity, %__MODULE__{} = address_to_remove) do
+  def delete_address(main_entity, %__MODULE__{} = address_to_remove) do
     main_entity.address
     |> Enum.reject(&is_address_hash_equal(&1, address_to_remove))
   end

@@ -74,8 +74,8 @@ defmodule Bigplates.Core.Restaurant do
   @doc """
     Delete existing address from active restaurant
   """
-  def remove_address(restaurant, %Address{} = address_to_remove) do
-    updated_address = Address.remove_address(restaurant, address_to_remove)
+  def delete_address(restaurant, %Address{} = address_to_remove) do
+    updated_address = Address.delete_address(restaurant, address_to_remove)
 
     restaurant |> Map.put(:address, updated_address)
   end

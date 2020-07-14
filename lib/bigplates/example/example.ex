@@ -102,7 +102,7 @@ defmodule Bigplates.Example do
       |> User.add_address(first_add)
 
     new_user
-    |> User.remove_address(hd(new_user.address))
+    |> User.delete_address(hd(new_user.address))
   end
 
   def create_restaurants() do
@@ -204,6 +204,5 @@ defmodule Bigplates.Example do
       min_order: 1
     })
   end
-
 
 end

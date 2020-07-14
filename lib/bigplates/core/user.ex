@@ -106,8 +106,8 @@ defmodule Bigplates.Core.User do
   @doc """
     Delete existing address from active users
   """
-  def remove_address(user, %Address{} = address_to_remove) do
-    updated_address = Address.remove_address(user, address_to_remove)
+  def delete_address(user, %Address{} = address_to_remove) do
+    updated_address = Address.delete_address(user, address_to_remove)
 
     user |> Map.put(:address, updated_address)
   end

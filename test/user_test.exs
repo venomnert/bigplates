@@ -214,7 +214,7 @@ defmodule UserTest do
 
       assert Enum.empty?(user_address.address) == false
 
-      removed_user_address = user_address |> User.remove_address(new_address)
+      removed_user_address = user_address |> User.delete_address(new_address)
 
       assert Enum.empty?(removed_user_address.address) == true
     end
@@ -228,7 +228,7 @@ defmodule UserTest do
       user_address =
         user
         |> User.add_address(first_address)
-        |> User.remove_address(unknown_address)
+        |> User.delete_address(unknown_address)
         |> Map.get(:address)
 
       assert Enum.empty?(user_address) == false
