@@ -141,7 +141,7 @@ defmodule VariantTest do
       variant
       |> Variant.new()
       |> assert_variant_fields(variant)
-      |> Variant.add_options(new_option)
+      |> Variant.add_variant_item(new_option)
       |> assert_variant_fields(updated_variant)
     end
 
@@ -161,16 +161,17 @@ defmodule VariantTest do
       variant = {variant_fields, options}
 
       new_option = [
-          variant_item_fields(%{name: "new_1", price: 50}),
-          variant_item_fields(%{name: "new_2", price: 10}),
-          variant_item_fields(%{name: "new_3", price: 0})
-        ]
+        variant_item_fields(%{name: "new_1", price: 50}),
+        variant_item_fields(%{name: "new_2", price: 10}),
+        variant_item_fields(%{name: "new_3", price: 0})
+      ]
+
       updated_variant = {variant_fields, new_option ++ options}
 
       variant
       |> Variant.new()
       |> assert_variant_fields(variant)
-      |> Variant.add_options(new_option)
+      |> Variant.add_variant_item(new_option)
       |> assert_variant_fields(updated_variant)
     end
   end
@@ -187,7 +188,7 @@ defmodule VariantTest do
       variant
       |> Variant.new()
       |> assert_variant_fields(variant)
-      |> Variant.add_options(new_option)
+      |> Variant.add_variant_item(new_option)
       |> assert_variant_fields(updated_variant)
     end
 
@@ -207,16 +208,17 @@ defmodule VariantTest do
       variant = {variant_fields, options}
 
       new_option = [
-          variant_item_fields(%{name: "new_1", price: 50}),
-          variant_item_fields(%{name: "new_2", price: 10}),
-          variant_item_fields(%{name: "new_3", price: 0})
-        ]
+        variant_item_fields(%{name: "new_1", price: 50}),
+        variant_item_fields(%{name: "new_2", price: 10}),
+        variant_item_fields(%{name: "new_3", price: 0})
+      ]
+
       updated_variant = {variant_fields, new_option ++ options}
 
       variant
       |> Variant.new()
       |> assert_variant_fields(variant)
-      |> Variant.add_options(new_option)
+      |> Variant.add_variant_item(new_option)
       |> assert_variant_fields(updated_variant)
     end
   end

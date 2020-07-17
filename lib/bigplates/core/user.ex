@@ -9,6 +9,7 @@ defmodule Bigplates.Core.User do
             first_name: nil,
             last_name: nil,
             phone_number: nil,
+            phone_number_ext: nil,
             company_name: nil,
             company_size: 0,
             dietary_preference: [],
@@ -112,14 +113,14 @@ defmodule Bigplates.Core.User do
     user |> Map.put(:address, updated_address)
   end
 
-  def add_order(user, order) do
-  end
+  # def add_order(user, order) do
+  # end
 
-  def add_payment(user, payment) do
-  end
+  # def add_payment(user, payment) do
+  # end
 
-  def favourite_menu_item(user, item) do
-  end
+  # def favourite_menu_item(user, item) do
+  # end
 
   defp clean_company_data(%{account_type: :company} = fields), do: fields
 

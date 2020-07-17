@@ -247,34 +247,58 @@ defmodule RestaurantTest do
     end
   end
 
-  describe "add & deleting menus to restaurant" do
+  describe "add & deleting menu items to restaurant" do
     setup [:restaurant]
 
-    test "adding menu", %{restaurant: restaurant} do
-      menu_1 = %{name: "Breakfast", meal_category: :breakfast} |> Menu.new()
-      menu_2 = %{name: "Scoops", meal_category: nil} |> Menu.new()
-      menu_3 = %{name: "Dough Pops", meal_category: :lunch} |> Menu.new()
-      menu_4 = %{name: "Dough Truffles", meal_category: nil} |> Menu.new()
+    test "adding menu item", %{restaurant: restaurant} do
+      menu_item_1 = menu_items_fields() |> MenuItem.new()
+
+      menu_item_2 =
+        menu_items_fields(%{name: "Omelette", description: "Egg, butter and cheese."})
+        |> MenuItem.new()
+
+      menu_item_3 =
+        menu_items_fields(%{name: "Pancake", description: "Breakfast cake."}) |> MenuItem.new()
+
+      menu_item_4 =
+        menu_items_fields(%{name: "Steak", category: :lunch, description: "T-bone steak."})
+        |> MenuItem.new()
 
       restaurant
-      |> Restaurant.add_menu(menu_1)
-      |> assert_menu(menu_1)
-      |> Restaurant.add_menu(menu_2)
-      |> Restaurant.add_menu(menu_3)
-      |> Restaurant.add_menu(menu_4)
+      |> Restaurant.add_menu_item(menu_item_1)
+      |> assert_menu(menu_item_1)
+      |> Restaurant.add_menu_item(menu_item_2)
+      |> assert_menu(menu_item_2)
+      |> Restaurant.add_menu_item(menu_item_3)
+      |> assert_menu(menu_item_3)
+      |> Restaurant.add_menu_item(menu_item_4)
+      |> assert_menu(menu_item_4)
     end
 
-    test "deleting menu", %{restaurant: restaurant} do
-      menu_1 = %{name: "Breakfast", meal_category: :breakfast} |> Menu.new()
-      menu_2 = %{name: "Scoops", meal_category: nil} |> Menu.new()
+    test "deleting menu item", %{restaurant: restaurant} do
+      menu_item_1 = menu_items_fields() |> MenuItem.new()
+
+      menu_item_2 =
+        menu_items_fields(%{
+          name: "Omelette",
+          category: :breakfast,
+          description: "Egg, butter and cheese."
+        })
+        |> MenuItem.new()
+
+      menu_item_3 =
+        menu_items_fields(%{name: "Steak", category: :lunch, description: "T-bone."})
+        |> MenuItem.new()
 
       restaurant
-      |> Restaurant.add_menu(menu_1)
-      |> assert_menu(menu_1)
-      |> Restaurant.add_menu(menu_2)
-      |> Restaurant.delete_menu(menu_1)
-      |> assert_menu_delete(menu_1)
-      |> assert_menu_qty(1)
+      |> Restaurant.add_menu_item(menu_item_1)
+      |> assert_menu(menu_item_1)
+      |> Restaurant.add_menu_item(menu_item_2)
+      |> assert_menu(menu_item_2)
+      |> Restaurant.delete_menu_item(menu_item_1)
+      |> assert_menu_delete(menu_item_1)
+      |> Restaurant.add_menu_item(menu_item_3)
+      |> assert_menu(menu_item_3)
     end
   end
 
@@ -325,21 +349,15 @@ defmodule RestaurantTest do
   end
 
   defp assert_menu(restaurant, fields) do
-    slug = Utility.create_slug(fields.name)
-    menu = restaurant.menus |> Map.get(slug)
-    assert fields.name == menu.name
-    assert fields.meal_category == menu.meal_category
-    assert fields.slug == menu.slug
+    menus = restaurant.menus[fields.category]
+    assert Map.has_key?(restaurant.menus, fields.category) == true
+    assert Enum.member?(menus, fields) == true
     restaurant
   end
 
-  defp assert_menu_delete(restaurant, menu) do
-    result =
-      restaurant.menus
-      |> Enum.member?(menu.slug)
-
-    assert result == false
-
+  defp assert_menu_delete(restaurant, fields) do
+    menus = restaurant.menus[fields.category]
+    assert Enum.member?(menus, fields) == false
     restaurant
   end
 
