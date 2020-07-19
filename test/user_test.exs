@@ -79,7 +79,7 @@ defmodule UserTest do
 
     test "create new company user with company fields" do
       fields =
-        %{account_type: :company, company_name: "Rambuton", company_size: 5000} |> user_fields()
+        %{account_type: :company, company_name: "Rambuton", company_size: 5000, phone_number_ext: "23123"} |> user_fields()
 
       User.new(fields)
       |> assert_company_user_fields_with_profile(fields)
@@ -131,7 +131,8 @@ defmodule UserTest do
         email_address: "nert@bigplates.com",
         first_name: "Ian",
         last_name: "Kelly",
-        phone_number: "4567891230"
+        phone_number: "4567891230",
+        phone_number_ext: "123"
       }
 
       updated_fields_2 = %{

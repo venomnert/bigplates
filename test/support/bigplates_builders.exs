@@ -53,6 +53,7 @@ defmodule BigplatesBuilder do
     Map.merge(
       %{
         name: "Burger",
+        category: :breakfast,
         description: "Our famous burger. Customize it to your preference."
       },
       overrides

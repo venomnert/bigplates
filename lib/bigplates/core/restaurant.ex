@@ -1,5 +1,5 @@
 defmodule Bigplates.Core.Restaurant do
-  alias Bigplates.Core.{CuisineType, Menu, Address}
+  alias Bigplates.Core.{CuisineType, MenuItem, Address}
   alias Bigplates.Utility
 
   defstruct name: nil,
@@ -45,14 +45,35 @@ defmodule Bigplates.Core.Restaurant do
     |> Map.put(:cuisine_types, updated_cuisine_types)
   end
 
-  def add_menu(restaurant, %Menu{} = menu) do
-    updated_menus = restaurant.menus |> Map.put(menu.slug, menu)
-    restaurant |> Map.put(:menus, updated_menus)
+  def add_menu_item(restaurant, %MenuItem{} = menu_item) do
+    menus =
+      update_in(
+        restaurant.menus,
+        [menu_item.category],
+        &add_to_list_or_nil(&1, menu_item)
+      )
+
+    restaurant |> Map.put(:menus, menus)
   end
 
-  def delete_menu(restaurant, %Menu{} = menu) do
-    updated_menus = restaurant.menus |> Map.delete(menu.slug)
-    restaurant |> Map.put(:menus, updated_menus)
+  defp add_to_list_or_nil(nil, menu_item), do: [menu_item]
+  defp add_to_list_or_nil(menu_items, menu_item), do: [menu_item | menu_items]
+
+  def delete_menu_item(restaurant, %MenuItem{} = menu_item) do
+    restaurant.menus
+    |> Enum.empty?()
+    |> case do
+      true ->
+        restaurant
+
+      false ->
+        updated_menus_category =
+          restaurant.menus[menu_item.category] |> Enum.reject(&Map.equal?(&1, menu_item))
+
+          updated_menu = restaurant.menus |> Map.put(menu_item.category, updated_menus_category)
+
+          restaurant |> Map.put(:menus, updated_menu)
+    end
   end
 
   @doc """
