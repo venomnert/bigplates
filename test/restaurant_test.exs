@@ -348,16 +348,13 @@ defmodule RestaurantTest do
     restaurant
   end
 
-  defp assert_menu(restaurant, fields) do
-    menus = restaurant.menus[fields.category]
-    assert Map.has_key?(restaurant.menus, fields.category) == true
-    assert Enum.member?(menus, fields) == true
+  defp assert_menu(restaurant, menu_item) do
+    assert get_in(restaurant.menus, [{menu_item.category, menu_item.name}]) == menu_item
     restaurant
   end
 
-  defp assert_menu_delete(restaurant, fields) do
-    menus = restaurant.menus[fields.category]
-    assert Enum.member?(menus, fields) == false
+  defp assert_menu_delete(restaurant, menu_item) do
+    assert get_in(restaurant.menus, [{menu_item.category, menu_item.name}]) == nil
     restaurant
   end
 

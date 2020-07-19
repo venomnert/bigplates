@@ -107,12 +107,14 @@ defmodule MenuItemTest do
 
     test "add variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
 
       variant_2 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -140,12 +142,14 @@ defmodule MenuItemTest do
 
     test "update variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
 
       variant_2 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -164,7 +168,8 @@ defmodule MenuItemTest do
         })
       ]
 
-      variant_3 = variant_fields(%{name: "Sides", type: :multiple, max_options: 4, required: false})
+      variant_3 =
+        variant_fields(%{name: "Sides", type: :multiple, max_options: 4, required: false})
 
       menu_item
       |> MenuItem.add_variant({variant_1, variant_1_options})
@@ -172,17 +177,18 @@ defmodule MenuItemTest do
       |> assert_variant({variant_2, variant_2_options})
       |> MenuItem.update_variant(variant_2, variant_3)
       |> assert_variant({variant_3, variant_2_options})
-
     end
 
     test "remove variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
 
       variant_2 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -214,10 +220,12 @@ defmodule MenuItemTest do
 
     test "add variant item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
+
       new_options = [
         variant_item_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"}),
         variant_item_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"})
@@ -232,11 +240,14 @@ defmodule MenuItemTest do
 
     test "update variant item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
+
       variant_2 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 3})
+
       new_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""}),
@@ -253,6 +264,7 @@ defmodule MenuItemTest do
 
     test "remove variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 3})
+
       variant_1_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -270,6 +282,7 @@ defmodule MenuItemTest do
           description: "Warning potential choking hazard. Get yourself a nurse girlfriend."
         })
       ]
+
       new_options = [
         variant_item_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"}),
         variant_item_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"})
@@ -279,16 +292,15 @@ defmodule MenuItemTest do
       |> MenuItem.add_variant({variant_1, variant_1_options})
       |> MenuItem.add_variant_item({variant_1, new_options})
       |> MenuItem.remove_variant_item(variant_1, %{
-          name: "Rare",
-          price: 0,
-          description: "Bleeding good."
-        })
+        name: "Rare",
+        price: 0,
+        description: "Bleeding good."
+      })
       |> assert_variant_item_removed(variant_1, %{
-          name: "Rare",
-          price: 0,
-          description: "Bleeding good."
-        })
-      |> IO.inspect(label: "Updated")
+        name: "Rare",
+        price: 0,
+        description: "Bleeding good."
+      })
     end
   end
 
@@ -330,26 +342,29 @@ defmodule MenuItemTest do
   end
 
   defp assert_variant(menu_item, {variant_fields, variant_items} = variant) do
-    result = menu_item.variants
-            |> Enum.member?(create_variant(variant))
+    result =
+      menu_item.variants
+      |> Enum.member?(create_variant(variant))
 
     assert result == true
     menu_item
   end
 
   defp assert_variant_removed(menu_item, {variant_fields, variant_items} = variant) do
-    result = menu_item.variants
-            |> Enum.member?(create_variant(variant))
+    result =
+      menu_item.variants
+      |> Enum.member?(create_variant(variant))
 
     assert result == false
     menu_item
   end
 
   defp assert_variant_item_removed(menu_item, variant, variant_item) do
-    result = menu_item.variants
-              |> Enum.find(&(&1.name == variant.name))
-              |> Map.get(:options)
-              |> Enum.member?(create_variant_item(variant_item))
+    result =
+      menu_item.variants
+      |> Enum.find(&(&1.name == variant.name))
+      |> Map.get(:options)
+      |> Enum.member?(create_variant_item(variant_item))
 
     assert result == false
     menu_item
@@ -358,6 +373,7 @@ defmodule MenuItemTest do
   defp create_variant(variant_fields) do
     variant_fields |> Variant.new()
   end
+
   defp create_variant_item(variant_item_fields) do
     variant_item_fields |> VariantItem.new()
   end

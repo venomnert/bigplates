@@ -47,10 +47,10 @@ defmodule Bigplates.Core.Restaurant do
 
   def add_menu_item(restaurant, %MenuItem{} = menu_item) do
     menus =
-      update_in(
-        restaurant.menus,
-        [menu_item.category],
-        &add_to_list_or_nil(&1, menu_item)
+      restaurant.menus
+      |> put_in(
+        [{menu_item.category, menu_item.name}],
+        menu_item
       )
 
     restaurant |> Map.put(:menus, menus)
@@ -67,12 +67,11 @@ defmodule Bigplates.Core.Restaurant do
         restaurant
 
       false ->
-        updated_menus_category =
-          restaurant.menus[menu_item.category] |> Enum.reject(&Map.equal?(&1, menu_item))
+        updated_menu =
+          restaurant.menus
+          |> Map.delete({menu_item.category, menu_item.name})
 
-          updated_menu = restaurant.menus |> Map.put(menu_item.category, updated_menus_category)
-
-          restaurant |> Map.put(:menus, updated_menu)
+        restaurant |> Map.put(:menus, updated_menu)
     end
   end
 
