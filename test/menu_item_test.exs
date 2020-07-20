@@ -142,14 +142,12 @@ defmodule MenuItemTest do
 
     test "update variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
-
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
 
       variant_2 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
-
       variant_2_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -220,12 +218,10 @@ defmodule MenuItemTest do
 
     test "add variant item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
-
       variant_1_options = [
         variant_item_fields(%{name: "Tomatoes", price: 0, description: ""}),
         variant_item_fields(%{name: "Onion", price: 0, description: ""})
       ]
-
       new_options = [
         variant_item_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"}),
         variant_item_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"})
@@ -264,7 +260,6 @@ defmodule MenuItemTest do
 
     test "remove variant to menu item", %{menu_item: menu_item} do
       variant_1 = variant_fields(%{name: "Doneness", type: :multiple, max_options: 3})
-
       variant_1_options = [
         variant_item_fields(%{
           name: "Rare",
@@ -341,19 +336,19 @@ defmodule MenuItemTest do
     menu_item
   end
 
-  defp assert_variant(menu_item, {variant_fields, variant_items} = variant) do
-    result =
-      menu_item.variants
-      |> Enum.member?(create_variant(variant))
+  defp assert_variant(menu_item, {variant_fields, _variant_items}) do
+    assert Map.get(menu_item.variants, variant_fields.name) != nil
+    assert Map.get(menu_item.variants, variant_fields.name).name == variant_fields.name
+    assert Map.get(menu_item.variants, variant_fields.name).required == variant_fields.required
+    assert Map.get(menu_item.variants, variant_fields.name).type == variant_fields.type
 
-    assert result == true
     menu_item
   end
 
-  defp assert_variant_removed(menu_item, {variant_fields, variant_items} = variant) do
+  defp assert_variant_removed(menu_item, {variant, _variant_options}) do
     result =
       menu_item.variants
-      |> Enum.member?(create_variant(variant))
+      |> Enum.member?(variant.name)
 
     assert result == false
     menu_item
@@ -362,19 +357,12 @@ defmodule MenuItemTest do
   defp assert_variant_item_removed(menu_item, variant, variant_item) do
     result =
       menu_item.variants
-      |> Enum.find(&(&1.name == variant.name))
+      |> Map.get(variant.name)
       |> Map.get(:options)
-      |> Enum.member?(create_variant_item(variant_item))
+      |> Enum.member?(variant_item.name)
 
     assert result == false
     menu_item
   end
-
-  defp create_variant(variant_fields) do
-    variant_fields |> Variant.new()
-  end
-
-  defp create_variant_item(variant_item_fields) do
-    variant_item_fields |> VariantItem.new()
-  end
+  
 end
