@@ -13,6 +13,7 @@ defmodule Bigplates.Example do
       """,
       unit_number: nil
     }
+
     second_add = %{
       street: "6 chimpunk rd",
       city: "scarborough",
@@ -29,7 +30,7 @@ defmodule Bigplates.Example do
       email_address: "nert@rambuton.com",
       first_name: "nert",
       last_name: "siva",
-      phone_number: "1231231231",
+      phone_number: "1231231231"
     }
     |> User.new()
     |> User.add_address(first_add)
@@ -47,6 +48,7 @@ defmodule Bigplates.Example do
       """,
       unit_number: nil
     }
+
     second_add = %{
       street: "6 chimpunk rd",
       city: "scarborough",
@@ -66,7 +68,7 @@ defmodule Bigplates.Example do
       phone_number: "1231231231",
       phone_number_ext: "890",
       company_name: "Acme",
-      company_size: 30,
+      company_size: 30
     }
     |> User.new()
     |> User.add_address(first_add)
@@ -86,13 +88,13 @@ defmodule Bigplates.Example do
       name: "TOE",
       requirements: %{
         minimum_time: 24,
-        minimum_order: 300,
+        minimum_order: 300
       },
       delivery_fee: %{
         fee: 20,
         waive_after: 1000
       },
-      cuisine_types: [thai: true, indian: true],
+      cuisine_types: [thai: true, indian: true]
     }
     |> Restaurant.new()
     |> Restaurant.add_address(first_add)
@@ -102,8 +104,9 @@ defmodule Bigplates.Example do
     portion_size_1 = %{name: :small, price: 50} |> PortionSize.new()
     portion_size_2 = %{name: :medium, price: 50, sale_price: 10} |> PortionSize.new()
 
-    variant_item_1 = %{name: "Standard Sub", type: :single, max_options: 1, required: true}
-    variant_items = [
+    variant_option_1 = %{name: "Standard Sub", type: :single, max_options: 1, required: true}
+
+    variant_options = [
       %{
         name: "Virginia Honey Ham \u0026 Smoked Turkey Breast",
         price: 13,
@@ -125,7 +128,7 @@ defmodule Bigplates.Example do
     |> MenuItem.new()
     |> MenuItem.add_portion_size(portion_size_1)
     |> MenuItem.add_portion_size(portion_size_2)
-    |> MenuItem.add_variant({variant_item_1, variant_items})
+    |> MenuItem.add_variant({variant_option_1, variant_options})
   end
 
   # def create_combo_item() do
@@ -158,5 +161,4 @@ defmodule Bigplates.Example do
   #   ]
   #   |> Enum.map(&PortionSize.new(&1))
   # end
-
 end
