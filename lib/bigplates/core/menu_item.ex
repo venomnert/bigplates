@@ -9,7 +9,7 @@ defmodule Bigplates.Core.MenuItem do
             description: nil,
             price_type: nil,
             portion_sizes: %{},
-            variants: [],
+            variants: %{},
             img: [],
             hidden: true
 
@@ -49,41 +49,28 @@ defmodule Bigplates.Core.MenuItem do
   end
 
   def add_variant(menu_item, {variant_fields, variant_items}) do
-    updated_variants = [Variant.new({variant_fields, variant_items})] ++ menu_item.variants
+    new_variant = Variant.new({variant_fields, variant_items})
+    updated_variants = menu_item.variants |> Map.put(new_variant.name, new_variant)
 
     menu_item |> Map.put(:variants, updated_variants)
   end
 
   def update_variant(menu_item, variant, new_variant) do
-    menu_item.variants
-    |> find_variant_index(variant)
-    |> case do
-      nil ->
-        menu_item
+    updated_variant = menu_item.variants |> Map.get(variant.name) |> Variant.update(new_variant)
+    updated_variants = menu_item.variants
+                      |> Map.delete(variant.name)
+                      |> Map.put(updated_variant.name, updated_variant)
 
-      index ->
-        updated_variants =
-          menu_item.variants
-          |> List.update_at(index, &Variant.update(&1, new_variant))
-
-        menu_item |> Map.put(:variants, updated_variants)
-    end
+    menu_item |> Map.put(:variants, updated_variants)
   end
 
   def remove_variant(menu_item, variant) do
-    menu_item.variants
-    |> find_variant_index(variant)
-    |> case do
-      nil ->
-        menu_item
+    updated_variants =
+      menu_item.variants
+      |> Map.delete(variant.name)
 
-      index ->
-        updated_variants =
-          menu_item.variants
-          |> List.delete_at(index)
+    menu_item |> Map.put(:variants, updated_variants)
 
-        menu_item |> Map.put(:variants, updated_variants)
-    end
   end
 
   def find_variant_index(variants, %{name: name} = variant) do
@@ -92,51 +79,27 @@ defmodule Bigplates.Core.MenuItem do
   end
 
   def add_variant_item(menu_item, {variant, new_variant_items}) do
-    menu_item.variants
-    |> find_variant_index(variant)
-    |> case do
-      nil ->
-        menu_item
+    updated_variants =
+      menu_item.variants
+      |> Map.update(variant.name, nil, &Variant.add_variant_item(&1, new_variant_items))
 
-      index ->
-        updated_variants =
-          menu_item.variants
-          |> List.update_at(index, &Variant.add_variant_item(&1, new_variant_items))
-
-        menu_item |> Map.put(:variants, updated_variants)
-    end
+    menu_item |> Map.put(:variants, updated_variants)
   end
 
   def update_variant_item(menu_item, {variant, new_variant_items}) do
-    menu_item.variants
-    |> find_variant_index(variant)
-    |> case do
-      nil ->
-        menu_item
+    updated_variants =
+      menu_item.variants
+      |> Map.update(variant.name, nil, &Variant.add_variant_item(&1, new_variant_items))
 
-      index ->
-        updated_variants =
-          menu_item.variants
-          |> List.update_at(index, &Variant.add_variant_item(&1, new_variant_items))
-
-        menu_item |> Map.put(:variants, updated_variants)
-    end
+    menu_item |> Map.put(:variants, updated_variants)
   end
 
   def remove_variant_item(menu_item, variant, variant_item) do
-    menu_item.variants
-    |> find_variant_index(variant)
-    |> case do
-      nil ->
-        menu_item
+    updated_variants =
+      menu_item.variants
+      |> Map.update(variant.name, nil, &Variant.remove_variant_item(&1, variant_item))
 
-      index ->
-        updated_variants =
-          menu_item.variants
-          |> List.update_at(index, &Variant.remove_variant(&1, variant_item))
-
-        menu_item |> Map.put(:variants, updated_variants)
-    end
+    menu_item |> Map.put(:variants, updated_variants)
   end
 
   defp validate_price_type(%{price_type: price_type} = menu_item)
