@@ -1,7 +1,7 @@
 defmodule Bigplates.Core.Variant do
   @variant_types [:single, :multiple]
 
-  alias Bigplates.Core.VariantItem
+  alias Bigplates.Core.VariantOption
 
   defstruct name: nil,
             type: nil,
@@ -9,9 +9,9 @@ defmodule Bigplates.Core.Variant do
             required: false,
             options: %{}
 
-  def new({variant_fields, variant_items}) do
+  def new({variant_fields, variant_options}) do
     struct!(__MODULE__, variant_fields)
-    |> add_variant_item(variant_items)
+    |> add_variant_option(variant_options)
     |> enforce_limits()
   end
 
@@ -21,31 +21,31 @@ defmodule Bigplates.Core.Variant do
     |> enforce_multiple_limit()
   end
 
-  def add_variant_item(variant, variant_items) do
+  def add_variant_option(variant, variant_options) do
     variant
-    |> add_multiple_variant_items(variant_items)
+    |> add_multiple_variant_options(variant_options)
     |> enforce_limits()
   end
 
-  def remove_variant_item(variant, variant_item) do
+  def remove_variant_option(variant, variant_option) do
     updated_options =
       variant.options
-      |> Map.delete(variant_item.name)
+      |> Map.delete(variant_option.name)
 
     variant |> Map.put(:options, updated_options)
   end
 
-  defp find_variant_item_index(variant_items, %{name: name} = variant_item) do
-    variant_items
+  defp find_variant_option_index(variant_options, %{name: name} = variant_option) do
+    variant_options
     |> Enum.find_index(&(&1.name == name))
   end
 
   def update(
         variant,
-        {%{name: name, type: type, required: required} = variant_fields, variant_items}
+        {%{name: name, type: type, required: required} = variant_fields, variant_options}
       ) do
     %{variant | name: name, type: type, required: required}
-    |> update_variant_items({variant_fields, variant_items})
+    |> update_variant_options({variant_fields, variant_options})
   end
 
   def update(variant, variant_fields) do
@@ -54,13 +54,17 @@ defmodule Bigplates.Core.Variant do
     |> enforce_limits()
   end
 
-  def update_variant_items(variant, {%{max_options: max_options} = variant_fields, variant_items}) do
+  def update_variant_options(
+        variant,
+        {%{max_options: max_options} = variant_fields, variant_options}
+      ) do
     %{variant | max_options: max_options, options: %{}}
-    |> add_variant_item(variant_items)
+    |> add_variant_option(variant_options)
     |> enforce_limits()
   end
 
   defp enforce_single_limit(%{type: :multiple} = variant), do: variant
+
   defp enforce_single_limit(%{type: :single} = variant) do
     variant
     |> Map.put(:max_options, 1)
@@ -69,9 +73,7 @@ defmodule Bigplates.Core.Variant do
   defp enforce_multiple_limit(%{type: :single, max_options: _max} = variant),
     do: variant
 
-  defp enforce_multiple_limit(
-         %{type: :multiple, max_options: max, options: options} = variant
-       ) do
+  defp enforce_multiple_limit(%{type: :multiple, max_options: max, options: options} = variant) do
     max_options = options |> Map.keys() |> length()
     min_options = 2
 
@@ -83,15 +85,18 @@ defmodule Bigplates.Core.Variant do
     end
   end
 
-  defp add_multiple_variant_items(variant, variant_item_fields) when is_list(variant_item_fields) do
-    variant_item_fields
-    |> Enum.reduce(variant, &add_variant_items(&2, &1))
+  defp add_multiple_variant_options(variant, variant_option_fields)
+       when is_list(variant_option_fields) do
+    variant_option_fields
+    |> Enum.reduce(variant, &add_variant_options(&2, &1))
   end
 
-  defp add_variant_items(variant, variant_item_fields) do
-    variant_item = VariantItem.new(variant_item_fields)
-    updated_options = variant.options
-                      |> Map.put(variant_item.name, variant_item)
+  defp add_variant_options(variant, variant_option_fields) do
+    variant_option = VariantOption.new(variant_option_fields)
+
+    updated_options =
+      variant.options
+      |> Map.put(variant_option.name, variant_option)
 
     variant |> Map.put(:options, updated_options)
   end

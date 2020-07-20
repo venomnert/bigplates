@@ -28,8 +28,8 @@ defmodule Bigplates.Core.ComboItem do
     combo_item |> Map.put(portion_size.name, portion_size)
   end
 
-  def add_variant(combo_item, {variant_fields, variant_items}) do
-    updated_variants = [Variant.new({variant_fields, variant_items})] ++ combo_item.variants
+  def add_variant(combo_item, {variant_fields, variant_options}) do
+    updated_variants = [Variant.new({variant_fields, variant_options})] ++ combo_item.variants
 
     combo_item |> Map.put(:variants, updated_variants)
   end

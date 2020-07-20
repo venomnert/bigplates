@@ -48,8 +48,8 @@ defmodule Bigplates.Core.MenuItem do
     menu_item |> Map.put(:portion_sizes, updated_portion_sizes)
   end
 
-  def add_variant(menu_item, {variant_fields, variant_items}) do
-    new_variant = Variant.new({variant_fields, variant_items})
+  def add_variant(menu_item, {variant_fields, variant_options}) do
+    new_variant = Variant.new({variant_fields, variant_options})
     updated_variants = menu_item.variants |> Map.put(new_variant.name, new_variant)
 
     menu_item |> Map.put(:variants, updated_variants)
@@ -57,9 +57,11 @@ defmodule Bigplates.Core.MenuItem do
 
   def update_variant(menu_item, variant, new_variant) do
     updated_variant = menu_item.variants |> Map.get(variant.name) |> Variant.update(new_variant)
-    updated_variants = menu_item.variants
-                      |> Map.delete(variant.name)
-                      |> Map.put(updated_variant.name, updated_variant)
+
+    updated_variants =
+      menu_item.variants
+      |> Map.delete(variant.name)
+      |> Map.put(updated_variant.name, updated_variant)
 
     menu_item |> Map.put(:variants, updated_variants)
   end
@@ -70,7 +72,6 @@ defmodule Bigplates.Core.MenuItem do
       |> Map.delete(variant.name)
 
     menu_item |> Map.put(:variants, updated_variants)
-
   end
 
   def find_variant_index(variants, %{name: name} = variant) do
@@ -78,26 +79,26 @@ defmodule Bigplates.Core.MenuItem do
     |> Enum.find_index(&(&1.name == name))
   end
 
-  def add_variant_item(menu_item, {variant, new_variant_items}) do
+  def add_variant_option(menu_item, {variant, new_variant_options}) do
     updated_variants =
       menu_item.variants
-      |> Map.update(variant.name, nil, &Variant.add_variant_item(&1, new_variant_items))
+      |> Map.update(variant.name, nil, &Variant.add_variant_option(&1, new_variant_options))
 
     menu_item |> Map.put(:variants, updated_variants)
   end
 
-  def update_variant_item(menu_item, {variant, new_variant_items}) do
+  def update_variant_option(menu_item, {variant, new_variant_options}) do
     updated_variants =
       menu_item.variants
-      |> Map.update(variant.name, nil, &Variant.add_variant_item(&1, new_variant_items))
+      |> Map.update(variant.name, nil, &Variant.add_variant_option(&1, new_variant_options))
 
     menu_item |> Map.put(:variants, updated_variants)
   end
 
-  def remove_variant_item(menu_item, variant, variant_item) do
+  def remove_variant_option(menu_item, variant, variant_option) do
     updated_variants =
       menu_item.variants
-      |> Map.update(variant.name, nil, &Variant.remove_variant_item(&1, variant_item))
+      |> Map.update(variant.name, nil, &Variant.remove_variant_option(&1, variant_option))
 
     menu_item |> Map.put(:variants, updated_variants)
   end
