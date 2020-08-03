@@ -2,132 +2,165 @@ defmodule RestaurantTest do
   use ExUnit.Case
   use BigplatesBuilder
 
-  describe "adding & updating requirements" do
-    setup [:restaurant_no_requirement_type]
 
-    test "Add requirement to restaurant", %{restaurant: restaurant} do
-      fields = %{
-        requirements: %{
-          minimum_time: 24,
-          minimum_order: 300
-        }
-      }
+  describe "adding & updating restaurant" do
+    setup [:restaurant]
 
-      restaurant
-      |> Restaurant.update_info(fields)
-      |> assert_requirements(fields)
+    test "Creating new restaurant" do
+      restaurant_1 = restaurant_fields()
+
+      restaurant_1
+      |> Restaurant.new()
+      |> assert_restaurant(restaurant_1)
     end
 
-    test "Update requirement to restaurant", %{restaurant: restaurant} do
-      fields_1 = %{
-        requirements: %{
-          minimum_time: 24,
-          minimum_order: 300
-        }
-      }
+    test "Update restaurant" do
+      restaurant_1 = restaurant_fields()
+      restaurant_2 = restaurant_fields(%{name: "Tom", cuisine_name: "Malaysian"})
 
-      fields_2 = %{
-        requirements: %{
-          minimum_time: 50,
-          minimum_order: 250
-        }
-      }
-
-      restaurant
-      |> Restaurant.update_info(fields_1)
-      |> assert_requirements(fields_1)
-      |> Restaurant.update_info(fields_2)
-      |> assert_requirements(fields_2)
+      restaurant_1
+      |> Restaurant.new()
+      |> assert_restaurant(restaurant_1)
+      |> Restaurant.update_info(restaurant_2)
+      |> assert_restaurant(restaurant_2)
     end
 
-    test "Invalid requirement to restaurant", %{restaurant: restaurant} do
-      fields_1 = %{
-        requirements: %{
-          minimum_time: 24,
-          minimum_order: 300
-        }
-      }
+    test "delete company restaurant", %{restaurant: restaurant} do
+      deleted_restaurant =
+        restaurant
+        |> Restaurant.delete_restaurant()
 
-      fields_2 = %{
-        requirements: %{
-          minimum_time: nil,
-          minimum_order: "fdsafa"
-        }
-      }
-
-      fields_3 = %{
-        requirements: %{
-          minimum_time: 0,
-          minimum_order: 0
-        }
-      }
-
-      restaurant
-      |> Restaurant.update_info(fields_1)
-      |> assert_requirements(fields_1)
-      |> Restaurant.update_info(fields_2)
-      |> assert_requirements(fields_3)
+      assert deleted_restaurant.hidden == true
     end
   end
 
-  describe "adding & updating delivery fee" do
-    setup [:restaurant_no_delivery_fee]
 
-    test "Add delivery fee to restaurant", %{restaurant: restaurant} do
-      fields = %{
-        delivery_fee: %{
-          fee: 50,
-          waive_after: 100
-        }
-      }
+  # describe "adding & updating requirements" do
+  #   setup [:restaurant_no_requirement_type]
 
-      restaurant
-      |> Restaurant.update_info(fields)
-      |> assert_delivery_fee(fields)
-    end
+  #   test "Add requirement to restaurant", %{restaurant: restaurant} do
+  #     fields = %{
+  #       requirements: %{
+  #         minimum_time: 24,
+  #         minimum_order: 300
+  #       }
+  #     }
 
-    test "Update delivery fee to restaurant", %{restaurant: restaurant} do
-      fields_1 = %{
-        delivery_fee: %{
-          fee: 10,
-          waive_after: 500
-        }
-      }
+  #     restaurant
+  #     |> Restaurant.update_info(fields)
+  #     |> assert_requirements(fields)
+  #   end
 
-      fields_2 = %{
-        delivery_fee: %{
-          fee: 500,
-          waive_after: 250
-        }
-      }
+  #   test "Update requirement to restaurant", %{restaurant: restaurant} do
+  #     fields_1 = %{
+  #       requirements: %{
+  #         minimum_time: 24,
+  #         minimum_order: 300
+  #       }
+  #     }
 
-      restaurant
-      |> Restaurant.update_info(fields_1)
-      |> assert_delivery_fee(fields_1)
-      |> Restaurant.update_info(fields_2)
-      |> assert_delivery_fee(fields_2)
-    end
+  #     fields_2 = %{
+  #       requirements: %{
+  #         minimum_time: 50,
+  #         minimum_order: 250
+  #       }
+  #     }
 
-    test "Invalid delivery fee to restaurant", %{restaurant: restaurant} do
-      fields_1 = %{
-        delivery_fee: %{
-          fee: "dfasfa",
-          waive_after: nil
-        }
-      }
+  #     restaurant
+  #     |> Restaurant.update_info(fields_1)
+  #     |> assert_requirements(fields_1)
+  #     |> Restaurant.update_info(fields_2)
+  #     |> assert_requirements(fields_2)
+  #   end
 
-      fields_2 = %{
-        delivery_fee: %{
-          fee: 0,
-          waive_after: 0
-        }
-      }
+  #   test "Invalid requirement to restaurant", %{restaurant: restaurant} do
+  #     fields_1 = %{
+  #       requirements: %{
+  #         minimum_time: 24,
+  #         minimum_order: 300
+  #       }
+  #     }
 
-      restaurant
-      |> Restaurant.update_info(fields_1)
-      |> assert_delivery_fee(fields_2)
-    end
-  end
+  #     fields_2 = %{
+  #       requirements: %{
+  #         minimum_time: nil,
+  #         minimum_order: "fdsafa"
+  #       }
+  #     }
+
+  #     fields_3 = %{
+  #       requirements: %{
+  #         minimum_time: 0,
+  #         minimum_order: 0
+  #       }
+  #     }
+
+  #     restaurant
+  #     |> Restaurant.update_info(fields_1)
+  #     |> assert_requirements(fields_1)
+  #     |> Restaurant.update_info(fields_2)
+  #     |> assert_requirements(fields_3)
+  #   end
+  # end
+
+  # describe "adding & updating delivery fee" do
+  #   setup [:restaurant_no_delivery_fee]
+
+  #   test "Add delivery fee to restaurant", %{restaurant: restaurant} do
+  #     fields = %{
+  #       delivery_fee: %{
+  #         fee: 50,
+  #         waive_after: 100
+  #       }
+  #     }
+
+  #     restaurant
+  #     |> Restaurant.update_info(fields)
+  #     |> assert_delivery_fee(fields)
+  #   end
+
+  #   test "Update delivery fee to restaurant", %{restaurant: restaurant} do
+  #     fields_1 = %{
+  #       delivery_fee: %{
+  #         fee: 10,
+  #         waive_after: 500
+  #       }
+  #     }
+
+  #     fields_2 = %{
+  #       delivery_fee: %{
+  #         fee: 500,
+  #         waive_after: 250
+  #       }
+  #     }
+
+  #     restaurant
+  #     |> Restaurant.update_info(fields_1)
+  #     |> assert_delivery_fee(fields_1)
+  #     |> Restaurant.update_info(fields_2)
+  #     |> assert_delivery_fee(fields_2)
+  #   end
+
+  #   test "Invalid delivery fee to restaurant", %{restaurant: restaurant} do
+  #     fields_1 = %{
+  #       delivery_fee: %{
+  #         fee: "dfasfa",
+  #         waive_after: nil
+  #       }
+  #     }
+
+  #     fields_2 = %{
+  #       delivery_fee: %{
+  #         fee: 0,
+  #         waive_after: 0
+  #       }
+  #     }
+
+  #     restaurant
+  #     |> Restaurant.update_info(fields_1)
+  #     |> assert_delivery_fee(fields_2)
+  #   end
+  # end
 
   describe "adding & removing address to restaurant" do
     setup [:restaurant]
@@ -179,18 +212,6 @@ defmodule RestaurantTest do
         |> Map.get(:address)
 
       assert Enum.empty?(restaurant_address) == false
-    end
-  end
-
-  describe "deleting restaurant" do
-    setup [:restaurant]
-
-    test "delete company restaurant", %{restaurant: restaurant} do
-      deleted_restaurant =
-        restaurant
-        |> Restaurant.delete_restaurant()
-
-      assert deleted_restaurant.hidden == true
     end
   end
 
@@ -273,6 +294,13 @@ defmodule RestaurantTest do
     {:ok, Map.put(context, :restaurant, restaurant)}
   end
 
+  defp assert_restaurant(restaurant, fields) do
+    IO.inspect(restaurant, label: "RESULTS")
+    assert restaurant.name == fields.name
+    assert restaurant.cuisine_name == fields.cuisine_name
+    assert restaurant.slug == Utility.create_slug(fields.cuisine_name)
+    restaurant
+  end
   defp assert_requirements(restaurant, fields) do
     assert fields.requirements == restaurant.requirements
     restaurant

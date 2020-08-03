@@ -27,9 +27,8 @@ defmodule Bigplates.Core.Restaurant do
 
   def update_info(restaurant, fields) do
     restaurant
-    |> struct!(fields)
-    |> validate_requirements()
-    |> validate_delivery_fee()
+    |> Map.merge(fields)
+    |> add_slug(fields)
   end
 
   def add_menu_item(restaurant, %MenuItem{} = menu_item) do
