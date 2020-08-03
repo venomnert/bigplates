@@ -73,7 +73,8 @@ defmodule BigplatesBuilder do
   def restaurant_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        name: "TOE"
+        name: "TOE",
+        cuisine_name: "Thai",
       },
       overrides
     )
@@ -181,24 +182,14 @@ defmodule BigplatesBuilder do
 
   def create_restaurant(:no_requirements) do
     %{
-      delivery_fee: restaurant_delivery_fee_fields(),
-      cuisine_types: CuisineType.new(cuisinine_fields())
+      delivery_fee: restaurant_delivery_fee_fields()
     }
     |> create_restaurant()
   end
 
   def create_restaurant(:no_delivery_fee) do
     %{
-      requirements: restaurant_requirement_fields(),
-      cuisine_types: CuisineType.new(cuisinine_fields())
-    }
-    |> create_restaurant()
-  end
-
-  def create_restaurant(:no_cuisine_type) do
-    %{
-      requirements: restaurant_requirement_fields(),
-      delivery_fee: restaurant_delivery_fee_fields()
+      requirements: restaurant_requirement_fields()
     }
     |> create_restaurant()
   end

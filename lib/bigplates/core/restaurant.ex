@@ -3,6 +3,7 @@ defmodule Bigplates.Core.Restaurant do
   alias Bigplates.Utility
 
   defstruct name: nil,
+            cuisine_name: nil,
             requirements: %{
               minimum_time: 0,
               minimum_order: 0
@@ -11,7 +12,6 @@ defmodule Bigplates.Core.Restaurant do
               fee: 0,
               waive_after: 0
             },
-            cuisine_types: %CuisineType{},
             menus: %{},
             payouts: [],
             orders: [],
@@ -30,19 +30,6 @@ defmodule Bigplates.Core.Restaurant do
     |> struct!(fields)
     |> validate_requirements()
     |> validate_delivery_fee()
-  end
-
-  def add_cuisine(restaurant, %CuisineType{} = cuisine_types) do
-    restaurant
-    |> Map.put(:cuisine_types, cuisine_types)
-  end
-
-  def update_cuisine(restaurant, fields) do
-    updated_cuisine_types =
-      restaurant |> Map.get(:cuisine_types, %CuisineType{}) |> struct!(fields)
-
-    restaurant
-    |> Map.put(:cuisine_types, updated_cuisine_types)
   end
 
   def add_menu_item(restaurant, %MenuItem{} = menu_item) do
@@ -102,7 +89,7 @@ defmodule Bigplates.Core.Restaurant do
 
   defp add_slug(restaurant, fields) do
     restaurant
-    |> Map.put(:slug, Utility.create_slug(fields.name))
+    |> Map.put(:slug, Utility.create_slug(fields.cuisine_name))
   end
 
   defp validate_requirements(restaurant) do
