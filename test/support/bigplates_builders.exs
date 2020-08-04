@@ -5,6 +5,8 @@ defmodule BigplatesBuilder do
         User,
         Address,
         Restaurant,
+        Restaurant.OrderRequirement,
+        Restaurant.DeliveryRequirement,
         CuisineType,
         Menu,
         MenuItem,
@@ -74,31 +76,27 @@ defmodule BigplatesBuilder do
     Map.merge(
       %{
         name: "TOE",
-        cuisine_name: "Thai",
+        cuisine_name: "Thai"
       },
       overrides
     )
   end
 
-  def restaurant_requirement_fields(overrides \\ %{}) do
+  def order_requirement_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        requirements: %{
-          minimum_time: 24,
-          minimum_order: 300
-        }
+        minimum_time: 24,
+        minimum_order: 300
       },
       overrides
     )
   end
 
-  def restaurant_delivery_fee_fields(overrides \\ %{}) do
+  def delivery_requirement_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        delivery_fee: %{
-          fee: 20,
-          waive_after: 1000
-        }
+        fee: 20,
+        waive_after: 1000
       },
       overrides
     )
@@ -178,20 +176,6 @@ defmodule BigplatesBuilder do
       restaurant_fields(),
       overrides
     )
-  end
-
-  def create_restaurant(:no_requirements) do
-    %{
-      delivery_fee: restaurant_delivery_fee_fields()
-    }
-    |> create_restaurant()
-  end
-
-  def create_restaurant(:no_delivery_fee) do
-    %{
-      requirements: restaurant_requirement_fields()
-    }
-    |> create_restaurant()
   end
 
   def address_generator(qty) do

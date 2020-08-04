@@ -2,6 +2,7 @@ defmodule CuisineTypeTest do
   use ExUnit.Case
   use BigplatesBuilder
 
+
   describe "adding & removing cuisine type to restaurant" do
     setup [:restaurant]
 
