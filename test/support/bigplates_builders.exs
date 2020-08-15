@@ -7,6 +7,7 @@ defmodule BigplatesBuilder do
         Restaurant,
         Restaurant.OrderRequirement,
         Restaurant.DeliveryRequirement,
+        MenuItem.ComboItem,
         MenuItem.CuisineType,
         MenuItem.DietaryType,
         MenuItem,
@@ -58,6 +59,18 @@ defmodule BigplatesBuilder do
         name: "Burger",
         category: :breakfast,
         description: "Our famous burger. Customize it to your preference."
+      },
+      overrides
+    )
+  end
+
+  def combo_items_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        name: "Special for 10 Beef",
+        price: 50,
+        savings: 25,
+        description: "Get the best beef dishes to feed the whole family."
       },
       overrides
     )
