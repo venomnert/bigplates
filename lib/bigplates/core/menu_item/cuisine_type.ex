@@ -1,4 +1,4 @@
-defmodule Bigplates.Core.CuisineType do
+defmodule Bigplates.Core.MenuItem.CuisineType do
   defstruct sri_lankan: false,
             indian: false,
             caribbean: false,

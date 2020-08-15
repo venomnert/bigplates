@@ -1,7 +1,7 @@
-defmodule Bigplates.Core.Variant do
+defmodule Bigplates.Core.MenuItem.Variant do
   @variant_types [:single, :multiple]
 
-  alias Bigplates.Core.VariantOption
+  alias Bigplates.Core.MenuItem.VariantOption
 
   defstruct name: nil,
             type: nil,
@@ -35,10 +35,10 @@ defmodule Bigplates.Core.Variant do
     variant |> Map.put(:options, updated_options)
   end
 
-  defp find_variant_option_index(variant_options, %{name: name} = variant_option) do
-    variant_options
-    |> Enum.find_index(&(&1.name == name))
-  end
+  # defp find_variant_option_index(variant_options, %{name: name} = _variant_option) do
+  #   variant_options
+  #   |> Enum.find_index(&(&1.name == name))
+  # end
 
   def update(
         variant,
@@ -56,7 +56,7 @@ defmodule Bigplates.Core.Variant do
 
   def update_variant_options(
         variant,
-        {%{max_options: max_options} = variant_fields, variant_options}
+        {%{max_options: max_options} = _variant_fields, variant_options}
       ) do
     %{variant | max_options: max_options, options: %{}}
     |> add_variant_option(variant_options)
