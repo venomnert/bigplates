@@ -33,12 +33,12 @@ defmodule Bigplates.Core.Admin do
     user |> Map.put(:address, updated_address)
   end
 
-  def add_order(user, order) do
-  end
+  # def add_order(user, order) do
+  # end
 
-  def add_payment(user, payment) do
-  end
+  # def add_payment(user, payment) do
+  # end
 
-  def favourite_menu_item(user, item) do
-  end
+  # def favourite_menu_item(user, item) do
+  # end
 end

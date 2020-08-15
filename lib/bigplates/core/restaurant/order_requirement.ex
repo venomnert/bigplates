@@ -7,7 +7,7 @@ defmodule Bigplates.Core.Restaurant.OrderRequirement do
     struct!(__MODULE__, fields)
   end
 
-  def new(%{minimum_time: min_time, minimum_order: min_order} = fields) do
+  def new(%{minimum_time: _min_time, minimum_order: _min_order} = fields) do
     default_fields = fields |> Map.merge(%{minimum_time: 0, minimum_order: 0})
     struct!(__MODULE__, default_fields)
   end

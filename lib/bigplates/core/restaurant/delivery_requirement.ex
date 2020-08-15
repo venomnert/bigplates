@@ -7,7 +7,7 @@ defmodule Bigplates.Core.Restaurant.DeliveryRequirement do
     struct!(__MODULE__, fields)
   end
 
-  def new(%{fee: fee, waive_after: waive_after} = fields) do
+  def new(%{fee: _fee, waive_after: _waive_after} = fields) do
     default_fields = fields |> Map.merge(%{fee: 0, waive_after: 0})
     struct!(__MODULE__, default_fields)
   end
