@@ -1,6 +1,6 @@
 defmodule Bigplates.Core.Restaurant do
   alias Bigplates.Core.Restaurant.{OrderRequirement, DeliveryRequirement}
-  alias Bigplates.Core.{CuisineType, MenuItem, Address}
+  alias Bigplates.Core.{MenuItem, Address}
   alias Bigplates.Utility
 
   defstruct name: nil,
@@ -36,9 +36,6 @@ defmodule Bigplates.Core.Restaurant do
 
     restaurant |> Map.put(:menus, menus)
   end
-
-  defp add_to_list_or_nil(nil, menu_item), do: [menu_item]
-  defp add_to_list_or_nil(menu_items, menu_item), do: [menu_item | menu_items]
 
   def delete_menu_item(restaurant, %MenuItem{} = menu_item) do
     restaurant.menus
