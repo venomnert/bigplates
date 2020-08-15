@@ -274,10 +274,4 @@ defmodule RestaurantTest do
     assert get_in(restaurant.menus, [{menu_item.category, menu_item.name}]) == nil
     restaurant
   end
-
-  defp assert_menu_qty(restaurant, qty) do
-    menus = restaurant.menus |> Map.keys()
-    assert length(menus) == qty
-    restaurant
-  end
 end

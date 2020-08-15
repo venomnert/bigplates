@@ -7,12 +7,12 @@ defmodule BigplatesBuilder do
         Restaurant,
         Restaurant.OrderRequirement,
         Restaurant.DeliveryRequirement,
-        CuisineType,
-        Menu,
+        MenuItem.CuisineType,
+        MenuItem.DietaryType,
         MenuItem,
-        PortionSize,
-        Variant,
-        VariantOption
+        MenuItem.PortionSize,
+        MenuItem.Variant,
+        MenuItem.VariantOption
       }
 
       alias Bigplates.Utility
@@ -20,7 +20,7 @@ defmodule BigplatesBuilder do
     end
   end
 
-  alias Bigplates.Core.{Address, CuisineType}
+  alias Bigplates.Core.{Address}
 
   def variant_fields(overrides \\ %{}) do
     Map.merge(
@@ -43,9 +43,10 @@ defmodule BigplatesBuilder do
   def portion_size_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        name: :small,
-        price: 51,
-        sale_price: 0
+        type: :tray,
+        portion: :small,
+        price: 50,
+        sale_price: 20
       },
       overrides
     )
@@ -102,12 +103,23 @@ defmodule BigplatesBuilder do
     )
   end
 
-  def cuisinine_fields(overrides \\ %{}) do
+  def cuisine_fields(overrides \\ %{}) do
     Map.merge(
       %{
         filipino: true,
         greek: true,
         italian: true
+      },
+      overrides
+    )
+  end
+
+  def dietary_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        egg_free: true,
+        vegetarian: true,
+        vegan: true,
       },
       overrides
     )

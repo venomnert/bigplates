@@ -4,7 +4,7 @@ defmodule MenuItemTest do
 
   describe "create & update menu item" do
     test "create menu item" do
-      menu_item_field = menu_items_fields(%{price_type: :single})
+      menu_item_field = menu_items_fields()
 
       menu_item_field
       |> MenuItem.new()
@@ -12,13 +12,12 @@ defmodule MenuItemTest do
     end
 
     test "update menu item" do
-      menu_item_field_1 = menu_items_fields(%{price_type: :single})
+      menu_item_field_1 = menu_items_fields()
 
       menu_item_field_2 =
         menu_items_fields(%{
           name: "Protein shake",
           description: "MMMMMM shake",
-          price_type: :per_person
         })
 
       menu_item_field_1
@@ -27,28 +26,50 @@ defmodule MenuItemTest do
       |> MenuItem.update_menu_item(menu_item_field_2)
       |> assert_menu_item(menu_item_field_2)
     end
+  end
 
-    test "update price type" do
-      menu_item_field_1 = menu_items_fields(%{price_type: :single})
-      menu_item_field_2 = menu_items_fields(%{price_type: :per_person})
+  describe "adding cuisine type" do
+    setup [:menu_item_base]
 
-      menu_item_field_1
-      |> MenuItem.new()
-      |> assert_menu_item(menu_item_field_1)
-      |> MenuItem.update_menu_item(menu_item_field_2)
-      |> assert_menu_item(menu_item_field_2)
+    test "update cuisine type", %{menu_item: menu_item} do
+      field_1 = cuisine_fields()
+
+      field_2 =
+        cuisine_fields(%{
+          filipino: false,
+          greek: false,
+          italian: false,
+          sri_lankan: true,
+          indian: true
+        })
+
+      menu_item
+      |> MenuItem.update_cuisine_type(field_1)
+      |> assert_cuisine_type(field_1)
+      |> MenuItem.update_cuisine_type(field_2)
+      |> assert_cuisine_type(field_2)
     end
+  end
 
-    test "invalide price type" do
-      menu_item_field_1 = menu_items_fields(%{price_type: :single})
-      menu_item_field_2 = menu_items_fields(%{price_type: :something_new})
-      invalid_item_field = menu_items_fields(%{price_type: nil})
+  describe "adding dietary type" do
+    setup [:menu_item_base]
 
-      menu_item_field_1
-      |> MenuItem.new()
-      |> assert_menu_item(menu_item_field_1)
-      |> MenuItem.update_menu_item(menu_item_field_2)
-      |> assert_menu_item(invalid_item_field)
+    test "update dietary type", %{menu_item: menu_item} do
+      field_1 = dietary_fields()
+
+      field_2 =
+        dietary_fields(%{
+          egg_free: false,
+          vegetarian: false,
+          gluten_free: true,
+          nut_free: true,
+        })
+
+      menu_item
+      |> MenuItem.update_dietary_type(field_1)
+      |> assert_dietary_type(field_1)
+      |> MenuItem.update_dietary_type(field_2)
+      |> assert_dietary_type(field_2)
     end
   end
 
@@ -56,19 +77,22 @@ defmodule MenuItemTest do
     setup [:menu_item_base]
 
     test "add portion sizes to menu item", %{menu_item: menu_item} do
-      portion_size_1 = portion_size_fields() |> PortionSize.new()
-      portion_size_2 = portion_size_fields(%{name: :medium, sale_price: 10}) |> PortionSize.new()
+      portion_size_1 = portion_size_fields()
+      portion_size_2 = portion_size_fields(%{portion: :medium, sale_price: 10})
+      portion_size_3 = portion_size_fields(%{type: :per_person, price: 10})
 
       menu_item
       |> MenuItem.add_portion_size(portion_size_1)
       |> assert_portion_size(portion_size_1)
       |> MenuItem.add_portion_size(portion_size_2)
       |> assert_portion_size(portion_size_2)
+      |> MenuItem.add_portion_size(portion_size_3)
+      |> assert_portion_size(portion_size_3)
     end
 
     test "create reduntant portion sizes to menu item", %{menu_item: menu_item} do
-      portion_size_1 = portion_size_fields() |> PortionSize.new()
-      portion_size_2 = portion_size_fields(%{price: 10}) |> PortionSize.new()
+      portion_size_1 = portion_size_fields()
+      portion_size_2 = portion_size_fields(%{price: 10})
 
       menu_item
       |> MenuItem.add_portion_size(portion_size_1)
@@ -78,20 +102,19 @@ defmodule MenuItemTest do
     end
 
     test "update portion sizes to menu item", %{menu_item: menu_item} do
-      portion_size_1 = portion_size_fields() |> PortionSize.new()
-      portion_size_2 = portion_size_fields(%{name: :medium, sale_price: 10})
-      updated_portion_size = PortionSize.update(portion_size_1, portion_size_2)
+      portion_size_1 = portion_size_fields(%{portion: :medium})
+      portion_size_2 = portion_size_fields(%{type: :per_person, price: 30, sale_price: 10})
 
       menu_item
       |> MenuItem.add_portion_size(portion_size_1)
       |> assert_portion_size(portion_size_1)
       |> MenuItem.update_portion_size(portion_size_1, portion_size_2)
-      |> assert_portion_size(updated_portion_size)
+      |> assert_portion_size(portion_size_2)
       |> assert_portion_size_count(1)
     end
 
     test "remove portion sizes to menu item", %{menu_item: menu_item} do
-      portion_size_1 = portion_size_fields() |> PortionSize.new()
+      portion_size_1 = portion_size_fields()
 
       menu_item
       |> MenuItem.add_portion_size(portion_size_1)
@@ -304,28 +327,63 @@ defmodule MenuItemTest do
     end
   end
 
+  describe "add extras" do
+    setup [:menu_item_base]
+
+    test "add extras", %{menu_item: menu_item} do
+      text_1 = "Add more ketchup please"
+      text_2 = "Make it spicy please"
+
+      menu_item
+      |> MenuItem.update_extra(text_1)
+      |> assert_extra(text_1)
+      |> MenuItem.update_extra(text_2)
+      |> assert_extra(text_2)
+    end
+  end
+
   defp menu_item_base(context) do
-    menu_item = menu_items_fields(%{price_type: :single}) |> MenuItem.new()
+    menu_item = menu_items_fields() |> MenuItem.new()
 
     {:ok, Map.put(context, :menu_item, menu_item)}
   end
 
-  defp add_portion_size(menu_item) do
-    portion_size_1 = portion_size_fields() |> PortionSize.new()
-
-    menu_item
-    |> MenuItem.add_portion_size(portion_size_1)
-  end
-
   defp assert_menu_item(menu_item, fields) do
-    assert fields.name == menu_item.name
-    assert fields.description == menu_item.description
-    assert fields.price_type == menu_item.price_type
+    assert menu_item.name == fields.name
+    assert menu_item.description == fields.description
+    assert menu_item.category == fields.category
     menu_item
   end
 
-  defp assert_portion_size(menu_item, %PortionSize{name: name}) do
-    assert Map.has_key?(menu_item.portion_sizes, name) == true
+  defp assert_extra(menu_item, text) do
+    assert menu_item.extra == text
+    menu_item
+  end
+
+  defp assert_cuisine_type(menu_item, fields) do
+    fields
+    |> Map.keys()
+    |> Enum.each(fn k ->
+      value = menu_item.cuisine_type |> Map.from_struct() |> get_in([k])
+      assert value == get_in(fields, [k])
+    end)
+
+    menu_item
+  end
+
+  defp assert_dietary_type(menu_item, fields) do
+    fields
+    |> Map.keys()
+    |> Enum.each(fn k ->
+      value = menu_item.dietary_type |> Map.from_struct() |> get_in([k])
+      assert value == get_in(fields, [k])
+    end)
+
+    menu_item
+  end
+
+  defp assert_portion_size(menu_item, portion_size) do
+    assert Map.has_key?(menu_item.portion_sizes, portion_size.portion) == true
     menu_item
   end
 

@@ -2,13 +2,12 @@ defmodule CuisineTypeTest do
   use ExUnit.Case
   use BigplatesBuilder
 
-
   describe "adding & removing cuisine type to restaurant" do
     setup [:restaurant]
 
     # Since this throws an error, should this be handled by Boundry layer?
     test "Invalid cuisine type to restaurant", %{restaurant: _restaurant} do
-      cuisinine_fields(%{english: true, french: false})
+      cuisine_fields(%{english: true, french: false})
       |> assert_cuisine_types_error()
     end
   end
