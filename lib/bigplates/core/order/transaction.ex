@@ -12,9 +12,9 @@ defmodule Bigplates.Core.Order.Transaction do
     struct!(__MODULE__, fields)
   end
 
-  def add_variant(menu_item, fields) do
-  end
+  # def add_variant(menu_item, fields) do
+  # end
 
-  def calculate_total_price(transaction) do
-  end
+  # def calculate_total_price(transaction) do
+  # end
 end

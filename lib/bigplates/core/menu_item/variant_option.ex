@@ -1,4 +1,4 @@
-defmodule Bigplates.Core.VariantOption do
+defmodule Bigplates.Core.MenuItem.VariantOption do
   defstruct ~w[name price description]a
 
   def new(fields) do

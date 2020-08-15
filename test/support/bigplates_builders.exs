@@ -5,12 +5,14 @@ defmodule BigplatesBuilder do
         User,
         Address,
         Restaurant,
-        CuisineType,
-        Menu,
+        Restaurant.OrderRequirement,
+        Restaurant.DeliveryRequirement,
+        MenuItem.CuisineType,
+        MenuItem.DietaryType,
         MenuItem,
-        PortionSize,
-        Variant,
-        VariantOption
+        MenuItem.PortionSize,
+        MenuItem.Variant,
+        MenuItem.VariantOption
       }
 
       alias Bigplates.Utility
@@ -18,7 +20,7 @@ defmodule BigplatesBuilder do
     end
   end
 
-  alias Bigplates.Core.{Address, CuisineType}
+  alias Bigplates.Core.{Address}
 
   def variant_fields(overrides \\ %{}) do
     Map.merge(
@@ -41,9 +43,10 @@ defmodule BigplatesBuilder do
   def portion_size_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        name: :small,
-        price: 51,
-        sale_price: 0
+        type: :tray,
+        portion: :small,
+        price: 50,
+        sale_price: 20
       },
       overrides
     )
@@ -73,42 +76,50 @@ defmodule BigplatesBuilder do
   def restaurant_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        name: "TOE"
+        name: "TOE",
+        cuisine_name: "Thai"
       },
       overrides
     )
   end
 
-  def restaurant_requirement_fields(overrides \\ %{}) do
+  def order_requirement_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        requirements: %{
-          minimum_time: 24,
-          minimum_order: 300
-        }
+        minimum_time: 24,
+        minimum_order: 300
       },
       overrides
     )
   end
 
-  def restaurant_delivery_fee_fields(overrides \\ %{}) do
+  def delivery_requirement_fields(overrides \\ %{}) do
     Map.merge(
       %{
-        delivery_fee: %{
-          fee: 20,
-          waive_after: 1000
-        }
+        fee: 20,
+        waive_after: 1000
       },
       overrides
     )
   end
 
-  def cuisinine_fields(overrides \\ %{}) do
+  def cuisine_fields(overrides \\ %{}) do
     Map.merge(
       %{
         filipino: true,
         greek: true,
         italian: true
+      },
+      overrides
+    )
+  end
+
+  def dietary_fields(overrides \\ %{}) do
+    Map.merge(
+      %{
+        egg_free: true,
+        vegetarian: true,
+        vegan: true,
       },
       overrides
     )
@@ -177,30 +188,6 @@ defmodule BigplatesBuilder do
       restaurant_fields(),
       overrides
     )
-  end
-
-  def create_restaurant(:no_requirements) do
-    %{
-      delivery_fee: restaurant_delivery_fee_fields(),
-      cuisine_types: CuisineType.new(cuisinine_fields())
-    }
-    |> create_restaurant()
-  end
-
-  def create_restaurant(:no_delivery_fee) do
-    %{
-      requirements: restaurant_requirement_fields(),
-      cuisine_types: CuisineType.new(cuisinine_fields())
-    }
-    |> create_restaurant()
-  end
-
-  def create_restaurant(:no_cuisine_type) do
-    %{
-      requirements: restaurant_requirement_fields(),
-      delivery_fee: restaurant_delivery_fee_fields()
-    }
-    |> create_restaurant()
   end
 
   def address_generator(qty) do
