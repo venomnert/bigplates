@@ -12,7 +12,7 @@ defmodule Bigplates.Core.MenuItem do
             variants: %{},
             extra: "",
             img: [],
-            hidden: true
+            hidden: false
 
   def new(fields) do
     struct!(__MODULE__, fields)

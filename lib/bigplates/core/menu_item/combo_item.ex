@@ -1,37 +1,109 @@
 defmodule Bigplates.Core.MenuItem.ComboItem do
-  alias Bigplates.Core.MenuItem.{PortionSize, Variant}
   alias Bigplates.Core.MenuItem
 
   defstruct name: nil,
             price: nil,
-            sale_price: nil,
             description: nil,
             cutlery: false,
-            published: true,
+            savings: nil,
             menu_items: [],
-            portion_sizes: %{},
-            variants: [],
+            hidden: false,
             img: []
 
   def new(fields) do
     struct!(__MODULE__, fields)
   end
 
-  def add_menu_item(combo_item, %MenuItem{} = menu_item) do
-    updated_menu = [menu_item] ++ combo_item.menu_items
-
-    combo_item |> Map.put(:menu_items, updated_menu)
+  def update_combo_item(combo_item, fields) do
+    new_combo_item = fields |> new()
+    combo_item |> Map.merge(new_combo_item)
   end
 
-  def add_portion_size(combo_item, fields) do
-    portion_size = PortionSize.new(fields)
+  def add_menu_item(combo_item, %MenuItem{name: name} = menu_item) do
+    key = name |> String.to_atom()
 
-    combo_item |> Map.put(portion_size.name, portion_size)
+    {_, updated_menu_items} =
+      combo_item.menu_items
+      |> Keyword.get_and_update(key, fn curr ->
+        add_item(curr, menu_item)
+      end)
+
+    combo_item |> Map.put(:menu_items, updated_menu_items)
   end
 
-  def add_variant(combo_item, {variant_fields, variant_options}) do
-    updated_variants = [Variant.new({variant_fields, variant_options})] ++ combo_item.variants
+  def update_menu_item(combo_item, {:increase, %MenuItem{name: name} = menu_item}) do
+    key = name |> String.to_atom()
 
-    combo_item |> Map.put(:variants, updated_variants)
+    case Keyword.has_key?(combo_item.menu_items, key) do
+      true ->
+        {_, updated_menu_items} =
+          combo_item.menu_items
+          |> Keyword.get_and_update(key, fn curr ->
+            increase_item(curr, menu_item)
+          end)
+
+        combo_item |> Map.put(:menu_items, updated_menu_items)
+
+      false ->
+        combo_item
+    end
+  end
+
+  def update_menu_item(combo_item, {:decrease, %MenuItem{name: name} = menu_item}) do
+    key = name |> String.to_atom()
+
+    case Keyword.has_key?(combo_item.menu_items, key) do
+      true ->
+        {_, updated_menu_items} =
+          combo_item.menu_items
+          |> Keyword.get_and_update(key, fn curr ->
+            decrease_item(curr, menu_item)
+          end)
+
+        combo_item |> Map.put(:menu_items, updated_menu_items)
+
+      false ->
+        combo_item
+    end
+  end
+
+  def remove_menu_item(combo_item, %MenuItem{name: name} = menu_item) do
+    key = name |> String.to_atom()
+
+    updated_menu_items =
+      combo_item.menu_items
+      |> Keyword.delete(key)
+
+    combo_item |> Map.put(:menu_items, updated_menu_items)
+  end
+
+  def calculate_savings(%{menu_items: []} = combo_item) do
+    combo_item
+  end
+
+  # Automatica saving calculator will be setup sometime in the future
+  # def calculate_savings(combo_item) do
+  #   updated_savings = for {_k, v} <- combo_item.menu_items, do: v.price
+  #   IO.inspect(updated_savings, label: "TEST")
+  # end
+
+  defp add_item(nil, menu_item) do
+    {nil, {menu_item, 1}}
+  end
+
+  defp add_item({curr_item, qty} = curr, _menu_item) do
+    {curr, curr}
+  end
+
+  defp increase_item({curr_item, qty} = curr, _menu_item) do
+    {curr, {curr, qty + 1}}
+  end
+
+  defp decrease_item({curr_item, 1} = curr, _menu_item) do
+    :pop
+  end
+
+  defp decrease_item({curr_item, qty} = curr, _menu_item) do
+    {curr, {curr, qty - 1}}
   end
 end
