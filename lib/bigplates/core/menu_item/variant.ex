@@ -21,7 +21,7 @@ defmodule Bigplates.Core.MenuItem.Variant do
     |> enforce_multiple_limit()
   end
 
-  def add_variant_option(variant, variant_options) do
+  def add_variant_option(variant, variant_options) when is_list(variant_options) do
     variant
     |> add_multiple_variant_options(variant_options)
     |> enforce_limits()
@@ -85,15 +85,13 @@ defmodule Bigplates.Core.MenuItem.Variant do
     end
   end
 
-  defp add_multiple_variant_options(variant, variant_option_fields)
-       when is_list(variant_option_fields) do
-    variant_option_fields
+  defp add_multiple_variant_options(variant, variant_options)
+       when is_list(variant_options) do
+    variant_options
     |> Enum.reduce(variant, &add_variant_options(&2, &1))
   end
 
-  defp add_variant_options(variant, variant_option_fields) do
-    variant_option = VariantOption.new(variant_option_fields)
-
+  defp add_variant_options(variant, %VariantOption{} = variant_option) do
     updated_options =
       variant.options
       |> Map.put(variant_option.name, variant_option)

@@ -23,35 +23,30 @@ defmodule Bigplates.Core.MenuItem do
     menu_item |> Map.merge(new_menu_item)
   end
 
-  def update_cuisine_type(menu_item, fields) do
-    updated_cuisine_type = menu_item.cuisine_type |> Map.merge(CuisineType.new(fields))
-    menu_item |> Map.put(:cuisine_type, updated_cuisine_type)
+  def update_cuisine_type(menu_item, %CuisineType{} = cuisine_type) do
+    menu_item |> Map.put(:cuisine_type, cuisine_type)
   end
 
-  def update_dietary_type(menu_item, fields) do
-    updated_dietary_type = menu_item.dietary_type |> Map.merge(DietaryType.new(fields))
-    menu_item |> Map.put(:dietary_type, updated_dietary_type)
+  def update_dietary_type(menu_item, %DietaryType{} = dietary_type) do
+    menu_item |> Map.put(:dietary_type, dietary_type)
   end
 
   def update_extra(menu_item, text) do
-    menu_item
-    |> Map.put(:extra, text)
+    menu_item |> Map.put(:extra, text)
   end
 
-  def add_portion_size(menu_item, fields) do
-    new_portion_size = fields |> PortionSize.new()
-
+  def add_portion_size(menu_item, %PortionSize{} = portion_size) do
     updated_portion_sizes =
-      menu_item.portion_sizes |> Map.put(new_portion_size.portion, new_portion_size)
+      menu_item.portion_sizes |> Map.put(portion_size.portion, portion_size)
 
     menu_item |> Map.put(:portion_sizes, updated_portion_sizes)
   end
 
-  def update_portion_size(menu_item, old_portion_size, new_portion_size) do
+  def update_portion_size(menu_item, %PortionSize{} = old_portion_size, new_portion_size_fields) do
     updated_portion_size =
       menu_item.portion_sizes
       |> Map.get(old_portion_size.portion)
-      |> PortionSize.update(new_portion_size)
+      |> PortionSize.update(new_portion_size_fields)
 
     updated_portion_sizes =
       menu_item.portion_sizes
@@ -66,20 +61,21 @@ defmodule Bigplates.Core.MenuItem do
     menu_item |> Map.put(:portion_sizes, updated_portion_sizes)
   end
 
-  def add_variant(menu_item, {variant_fields, variant_options}) do
-    new_variant = Variant.new({variant_fields, variant_options})
-    updated_variants = menu_item.variants |> Map.put(new_variant.name, new_variant)
-
+  def add_variant(menu_item, %Variant{} = variant) do
+    updated_variants = menu_item.variants |> Map.put(variant.name, variant)
     menu_item |> Map.put(:variants, updated_variants)
   end
 
   def update_variant(menu_item, variant, new_variant) do
-    updated_variant = menu_item.variants |> Map.get(variant.name) |> Variant.update(new_variant)
-
-    updated_variants =
+    updated_variant =
       menu_item.variants
-      |> Map.delete(variant.name)
-      |> Map.put(updated_variant.name, updated_variant)
+      |> Map.get(variant.name)
+      |> Variant.update(new_variant)
+
+      updated_variants =
+        menu_item.variants
+        |> Map.delete(variant.name)
+        |> Map.put(updated_variant.name, updated_variant)
 
     menu_item |> Map.put(:variants, updated_variants)
   end
@@ -92,15 +88,7 @@ defmodule Bigplates.Core.MenuItem do
     menu_item |> Map.put(:variants, updated_variants)
   end
 
-  def add_variant_option(menu_item, {variant, new_variant_options}) do
-    updated_variants =
-      menu_item.variants
-      |> Map.update(variant.name, nil, &Variant.add_variant_option(&1, new_variant_options))
-
-    menu_item |> Map.put(:variants, updated_variants)
-  end
-
-  def update_variant_option(menu_item, {variant, new_variant_options}) do
+  def add_variant_option(menu_item, variant, new_variant_options) do
     updated_variants =
       menu_item.variants
       |> Map.update(variant.name, nil, &Variant.add_variant_option(&1, new_variant_options))

@@ -13,7 +13,13 @@ defmodule VariantTest do
 
     test "create multiple variant" do
       variant_fields = variant_fields(%{type: :multiple, max_options: 2})
-      variant = {variant_fields, [%{}, %{}]}
+
+      variant =
+        {variant_fields,
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
+         ]}
 
       variant
       |> Variant.new()
@@ -21,8 +27,19 @@ defmodule VariantTest do
     end
 
     test "create single variant with high max options" do
-      variant_1 = {variant_fields(%{max_options: 2}), [%{}, %{}]}
-      variant_2 = {variant_fields(), [%{}, %{}]}
+      variant_1 =
+        {variant_fields(%{max_options: 2}),
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
+         ]}
+
+      variant_2 =
+        {variant_fields(),
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
+         ]}
 
       variant_1
       |> Variant.new()
@@ -38,8 +55,8 @@ defmodule VariantTest do
       variant_2 =
         {variant_fields_2,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
          ]}
 
       variant_1
@@ -56,17 +73,17 @@ defmodule VariantTest do
       variant_1 =
         {variant_fields_1,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
          ]}
 
       variant_2 =
         {variant_fields_2,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"}),
-           variant_option_fields(%{name: "new name 3"}),
-           variant_option_fields(%{name: "new name 4"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 4"}))
          ]}
 
       variant_1
@@ -83,17 +100,17 @@ defmodule VariantTest do
       variant_1 =
         {variant_fields_1,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
          ]}
 
       variant_2 =
         {variant_fields_2,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"}),
-           variant_option_fields(%{name: "new name 3"}),
-           variant_option_fields(%{name: "new name 4"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 4"}))
          ]}
 
       variant_1
@@ -108,9 +125,21 @@ defmodule VariantTest do
       variant_fields_2 = variant_fields(%{name: "Burger", max_options: 2, required: false})
       valid_field = variant_fields_2 |> Map.put(:max_options, 1)
 
-      variant_1 = {variant_fields_1, [%{}]}
-      variant_2 = {variant_fields_2, [%{}, %{}]}
-      valid_variant = {valid_field, [%{}, %{}]}
+      variant_1 = {variant_fields_1, [VariantOption.new(%{name: "new name 4"})]}
+
+      variant_2 =
+        {variant_fields_2,
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
+         ]}
+
+      valid_variant =
+        {valid_field,
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
+         ]}
 
       variant_1
       |> Variant.new()
@@ -128,17 +157,17 @@ defmodule VariantTest do
       variant_1 =
         {variant_fields_1,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"}))
          ]}
 
       variant_2 =
         {variant_fields_2,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"}),
-           variant_option_fields(%{name: "new name 3"}),
-           variant_option_fields(%{name: "new name 4"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 4"}))
          ]}
 
       variant_1
@@ -155,11 +184,17 @@ defmodule VariantTest do
     test "max > max_options with empty options" do
       variant_fields_1 = variant_fields(%{type: :multiple, max_options: 5})
 
-      variant_1 = {variant_fields_1, [%{}, %{}, %{}]}
+      variant_1 =
+        {variant_fields_1,
+         [
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"}))
+         ]}
 
       variant_1
       |> Variant.new()
-      |> assert_max_options(2)
+      |> assert_max_options(3)
     end
 
     test "max > max_options" do
@@ -168,9 +203,9 @@ defmodule VariantTest do
       variant_1 =
         {variant_fields_1,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"}),
-           variant_option_fields(%{name: "new name 3"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"}))
          ]}
 
       variant_1
@@ -184,9 +219,9 @@ defmodule VariantTest do
       variant_1 =
         {variant_fields_1,
          [
-           variant_option_fields(%{name: "new name 1"}),
-           variant_option_fields(%{name: "new name 2"}),
-           variant_option_fields(%{name: "new name 3"})
+           VariantOption.new(variant_option_fields(%{name: "new name 1"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 2"})),
+           VariantOption.new(variant_option_fields(%{name: "new name 3"}))
          ]}
 
       variant_1
@@ -198,16 +233,24 @@ defmodule VariantTest do
   describe "create & add variant options" do
     test "create single variant" do
       variant_fields = variant_fields()
-      options = [variant_option_fields(), variant_option_fields(%{name: "new name"})]
+
+      options = [
+        VariantOption.new(variant_option_fields()),
+        VariantOption.new(variant_option_fields(%{name: "new name"}))
+      ]
+
       variant = {variant_fields, options}
 
-      new_option = [variant_option_fields(%{name: "added new one", price: 50})]
-      updated_variant = {variant_fields, new_option ++ options}
+      new_options = [
+        VariantOption.new(variant_option_fields(%{name: "added new one", price: 50}))
+      ]
+
+      updated_variant = {variant_fields, new_options ++ options}
 
       variant
       |> Variant.new()
       |> assert_variant_fields(variant)
-      |> Variant.add_variant_option(new_option)
+      |> Variant.add_variant_option(new_options)
       |> assert_variant_fields(updated_variant)
     end
 
@@ -215,21 +258,23 @@ defmodule VariantTest do
       variant_fields = variant_fields(%{type: :multiple, max_options: 2})
 
       options = [
-        variant_option_fields(),
-        variant_option_fields(%{name: "new name"}),
-        variant_option_fields(%{
-          name: "Medium rare",
-          price: 0,
-          description: "Medium rare on the grill."
-        })
+        VariantOption.new(variant_option_fields()),
+        VariantOption.new(variant_option_fields(%{name: "new name"})),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium rare",
+            price: 0,
+            description: "Medium rare on the grill."
+          })
+        )
       ]
 
       variant = {variant_fields, options}
 
       new_option = [
-        variant_option_fields(%{name: "new_1", price: 50}),
-        variant_option_fields(%{name: "new_2", price: 10}),
-        variant_option_fields(%{name: "new_3", price: 0})
+        VariantOption.new(variant_option_fields(%{name: "new_1", price: 50})),
+        VariantOption.new(variant_option_fields(%{name: "new_2", price: 10})),
+        VariantOption.new(variant_option_fields(%{name: "new_3", price: 0}))
       ]
 
       updated_variant = {variant_fields, new_option ++ options}
@@ -245,10 +290,15 @@ defmodule VariantTest do
   describe "update variant options" do
     test "create single variant" do
       variant_fields = variant_fields()
-      options = [variant_option_fields(), variant_option_fields(%{name: "new name"})]
+
+      options = [
+        VariantOption.new(variant_option_fields()),
+        VariantOption.new(variant_option_fields(%{name: "new name"}))
+      ]
+
       variant = {variant_fields, options}
 
-      new_option = [variant_option_fields(%{name: "added new one", price: 50})]
+      new_option = [VariantOption.new(variant_option_fields(%{name: "added new one", price: 50}))]
       updated_variant = {variant_fields, new_option ++ options}
 
       variant
@@ -262,21 +312,23 @@ defmodule VariantTest do
       variant_fields = variant_fields(%{type: :multiple, max_options: 2})
 
       options = [
-        variant_option_fields(),
-        variant_option_fields(%{name: "new name"}),
-        variant_option_fields(%{
-          name: "Medium rare",
-          price: 0,
-          description: "Medium rare on the grill."
-        })
+        VariantOption.new(variant_option_fields()),
+        VariantOption.new(variant_option_fields(%{name: "new name"})),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium rare",
+            price: 0,
+            description: "Medium rare on the grill."
+          })
+        )
       ]
 
       variant = {variant_fields, options}
 
       new_option = [
-        variant_option_fields(%{name: "new_1", price: 50}),
-        variant_option_fields(%{name: "new_2", price: 10}),
-        variant_option_fields(%{name: "new_3", price: 0})
+        VariantOption.new(variant_option_fields(%{name: "new_1", price: 50})),
+        VariantOption.new(variant_option_fields(%{name: "new_2", price: 10})),
+        VariantOption.new(variant_option_fields(%{name: "new_3", price: 0}))
       ]
 
       updated_variant = {variant_fields, new_option ++ options}
