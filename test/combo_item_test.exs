@@ -177,8 +177,8 @@ defmodule ComboItemTest do
     combo_item
   end
 
-  defp assert_savings(combo_item, amount) do
-    assert combo_item.savings == amount
-    combo_item
-  end
+  # defp assert_savings(combo_item, amount) do
+  #   assert combo_item.savings == amount
+  #   combo_item
+  # end
 end

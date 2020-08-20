@@ -67,7 +67,7 @@ defmodule Bigplates.Core.MenuItem.ComboItem do
     end
   end
 
-  def remove_menu_item(combo_item, %MenuItem{name: name} = menu_item) do
+  def remove_menu_item(combo_item, %MenuItem{name: name} = _menu_item) do
     key = name |> String.to_atom()
 
     updated_menu_items =
@@ -91,19 +91,19 @@ defmodule Bigplates.Core.MenuItem.ComboItem do
     {nil, {menu_item, 1}}
   end
 
-  defp add_item({curr_item, qty} = curr, _menu_item) do
+  defp add_item(curr, _menu_item) do
     {curr, curr}
   end
 
-  defp increase_item({curr_item, qty} = curr, _menu_item) do
+  defp increase_item({_curr_item, qty} = curr, _menu_item) do
     {curr, {curr, qty + 1}}
   end
 
-  defp decrease_item({curr_item, 1} = curr, _menu_item) do
+  defp decrease_item({_curr_item, 1} = curr, _menu_item) do
     :pop
   end
 
-  defp decrease_item({curr_item, qty} = curr, _menu_item) do
+  defp decrease_item({_curr_item, qty} = curr, _menu_item) do
     {curr, {curr, qty - 1}}
   end
 end
