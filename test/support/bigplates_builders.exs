@@ -57,7 +57,7 @@ defmodule BigplatesBuilder do
     Map.merge(
       %{
         name: "Burger",
-        category: :breakfast,
+        categories: [:breakfast],
         description: "Our famous burger. Customize it to your preference."
       },
       overrides
@@ -71,16 +71,6 @@ defmodule BigplatesBuilder do
         price: 50,
         savings: 25,
         description: "Get the best beef dishes to feed the whole family."
-      },
-      overrides
-    )
-  end
-
-  def menu_fields(overrides \\ %{}) do
-    Map.merge(
-      %{
-        name: "Breakfast",
-        meal_category: :breakfast
       },
       overrides
     )

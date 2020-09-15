@@ -18,6 +18,7 @@ defmodule MenuItemTest do
         menu_items_fields(%{
           name: "Protein shake",
           description: "MMMMMM shake",
+          categories: [:breakfast]
         })
 
       menu_item_field_1
@@ -25,6 +26,23 @@ defmodule MenuItemTest do
       |> assert_menu_item(menu_item_field_1)
       |> MenuItem.update_menu_item(menu_item_field_2)
       |> assert_menu_item(menu_item_field_2)
+    end
+
+    test "invalid categories menu item" do
+      menu_item_field_1 = menu_items_fields()
+
+      menu_item_field_2 =
+        menu_items_fields(%{
+          name: "Protein shake",
+          description: "MMMMMM shake",
+          categories: [:hello]
+        })
+
+      menu_item_field_1
+      |> MenuItem.new()
+      |> assert_menu_item(menu_item_field_1)
+      |> MenuItem.update_menu_item(menu_item_field_2)
+      |> assert_invalid_categories()
     end
   end
 
@@ -63,7 +81,7 @@ defmodule MenuItemTest do
           egg_free: false,
           vegetarian: false,
           gluten_free: true,
-          nut_free: true,
+          nut_free: true
         })
         |> DietaryType.new()
 
@@ -80,7 +98,10 @@ defmodule MenuItemTest do
 
     test "add portion sizes to menu item", %{menu_item: menu_item} do
       portion_size_1 = portion_size_fields() |> PortionSize.new()
-      portion_size_2 = portion_size_fields(%{portion: :medium, sale_price: 10}) |> PortionSize.new()
+
+      portion_size_2 =
+        portion_size_fields(%{portion: :medium, sale_price: 10}) |> PortionSize.new()
+
       portion_size_3 = portion_size_fields(%{type: :per_person, price: 10}) |> PortionSize.new()
 
       menu_item
@@ -105,8 +126,12 @@ defmodule MenuItemTest do
 
     test "update portion sizes to menu item", %{menu_item: menu_item} do
       portion_size_1 = portion_size_fields(%{portion: :medium}) |> PortionSize.new()
-      portion_size_2 = portion_size_fields(%{type: :per_person, price: 30, sale_price: 10}) |> PortionSize.new()
-      new_portion_size_fields = portion_size_fields(%{type: :per_person, price: 30, sale_price: 10})
+
+      portion_size_2 =
+        portion_size_fields(%{type: :per_person, price: 30, sale_price: 10}) |> PortionSize.new()
+
+      new_portion_size_fields =
+        portion_size_fields(%{type: :per_person, price: 30, sale_price: 10})
 
       menu_item
       |> MenuItem.add_portion_size(portion_size_1)
@@ -133,18 +158,36 @@ defmodule MenuItemTest do
 
     test "add variant to menu item", %{menu_item: menu_item} do
       variant_1_fields = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         VariantOption.new(variant_option_fields(%{name: "Tomatoes", price: 0, description: ""})),
         VariantOption.new(variant_option_fields(%{name: "Onion", price: 0, description: ""}))
       ]
+
       variant_1 = Variant.new({variant_1_fields, variant_1_options})
 
       variant_2_fields = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
-        VariantOption.new(variant_option_fields(%{name: "Rare",price: 0,description: "Bleeding good."})),
-        VariantOption.new(variant_option_fields(%{name: "Medium Rare",price: 0,description: "Just enough bleeding."})),
-        VariantOption.new(variant_option_fields(%{name: "Well done.",price: 0,description: "Warning potential choking hazard. Get yourself a nurse girlfriend."}))
+        VariantOption.new(
+          variant_option_fields(%{name: "Rare", price: 0, description: "Bleeding good."})
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium Rare",
+            price: 0,
+            description: "Just enough bleeding."
+          })
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Well done.",
+            price: 0,
+            description: "Warning potential choking hazard. Get yourself a nurse girlfriend."
+          })
+        )
       ]
+
       variant_2 = Variant.new({variant_2_fields, variant_2_options})
 
       menu_item
@@ -156,18 +199,36 @@ defmodule MenuItemTest do
 
     test "update variant to menu item", %{menu_item: menu_item} do
       variant_1_fields = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         VariantOption.new(variant_option_fields(%{name: "Tomatoes", price: 0, description: ""})),
         VariantOption.new(variant_option_fields(%{name: "Onion", price: 0, description: ""}))
       ]
+
       variant_1 = Variant.new({variant_1_fields, variant_1_options})
 
       variant_2_fields = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
-        VariantOption.new(variant_option_fields(%{name: "Rare",price: 0,description: "Bleeding good."})),
-        VariantOption.new(variant_option_fields(%{name: "Medium Rare",price: 0,description: "Just enough bleeding."})),
-        VariantOption.new(variant_option_fields(%{name: "Well done.",price: 0,description: "Warning potential choking hazard. Get yourself a nurse girlfriend."}))
+        VariantOption.new(
+          variant_option_fields(%{name: "Rare", price: 0, description: "Bleeding good."})
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium Rare",
+            price: 0,
+            description: "Just enough bleeding."
+          })
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Well done.",
+            price: 0,
+            description: "Warning potential choking hazard. Get yourself a nurse girlfriend."
+          })
+        )
       ]
+
       variant_2 = Variant.new({variant_2_fields, variant_2_options})
 
       variant_3_fields =
@@ -185,18 +246,36 @@ defmodule MenuItemTest do
 
     test "remove variant to menu item", %{menu_item: menu_item} do
       variant_1_fields = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         VariantOption.new(variant_option_fields(%{name: "Tomatoes", price: 0, description: ""})),
         VariantOption.new(variant_option_fields(%{name: "Onion", price: 0, description: ""}))
       ]
+
       variant_1 = Variant.new({variant_1_fields, variant_1_options})
 
       variant_2_fields = variant_fields(%{name: "Doneness", type: :multiple, max_options: 1})
+
       variant_2_options = [
-        VariantOption.new(variant_option_fields(%{name: "Rare",price: 0,description: "Bleeding good."})),
-        VariantOption.new(variant_option_fields(%{name: "Medium Rare",price: 0,description: "Just enough bleeding."})),
-        VariantOption.new(variant_option_fields(%{name: "Well done.",price: 0,description: "Warning potential choking hazard. Get yourself a nurse girlfriend."}))
+        VariantOption.new(
+          variant_option_fields(%{name: "Rare", price: 0, description: "Bleeding good."})
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium Rare",
+            price: 0,
+            description: "Just enough bleeding."
+          })
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Well done.",
+            price: 0,
+            description: "Warning potential choking hazard. Get yourself a nurse girlfriend."
+          })
+        )
       ]
+
       variant_2 = Variant.new({variant_2_fields, variant_2_options})
 
       menu_item
@@ -212,16 +291,23 @@ defmodule MenuItemTest do
 
     test "add variant option", %{menu_item: menu_item} do
       variant_1_fields = variant_fields(%{name: "Toppings", type: :multiple, max_options: 1})
+
       variant_1_options = [
         VariantOption.new(variant_option_fields(%{name: "Tomatoes", price: 0, description: ""})),
         VariantOption.new(variant_option_fields(%{name: "Onion", price: 0, description: ""}))
       ]
+
       variant_1 = Variant.new({variant_1_fields, variant_1_options})
 
       new_options = [
-        VariantOption.new(variant_option_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"})),
-        VariantOption.new(variant_option_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"}))
+        VariantOption.new(
+          variant_option_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"})
+        ),
+        VariantOption.new(
+          variant_option_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"})
+        )
       ]
+
       variant_2 = Variant.new({variant_1_fields, variant_1_options ++ new_options})
 
       menu_item
@@ -233,20 +319,40 @@ defmodule MenuItemTest do
 
     test "remove variant option to menu item", %{menu_item: menu_item} do
       variant_1_fields = variant_fields(%{name: "Doneness", type: :multiple, max_options: 3})
+
       variant_1_options = [
-        VariantOption.new(variant_option_fields(%{
-          name: "Rare",
-          price: 0,
-          description: "Bleeding good."
-        })),
-        VariantOption.new(variant_option_fields(%{name: "Medium Rare",price: 0,description: "Just enough bleeding."})),
-        VariantOption.new(variant_option_fields(%{name: "Well done.",price: 0,description: "Warning potential choking hazard. Get yourself a nurse girlfriend."}))
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Rare",
+            price: 0,
+            description: "Bleeding good."
+          })
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Medium Rare",
+            price: 0,
+            description: "Just enough bleeding."
+          })
+        ),
+        VariantOption.new(
+          variant_option_fields(%{
+            name: "Well done.",
+            price: 0,
+            description: "Warning potential choking hazard. Get yourself a nurse girlfriend."
+          })
+        )
       ]
+
       variant_1 = Variant.new({variant_1_fields, variant_1_options})
 
       new_options = [
-        VariantOption.new(variant_option_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"})),
-        VariantOption.new(variant_option_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"}))
+        VariantOption.new(
+          variant_option_fields(%{name: "Sausage", price: 1, description: "extra spicy sausage"})
+        ),
+        VariantOption.new(
+          variant_option_fields(%{name: "Meat", price: 5, description: "extra meat!!!!!"})
+        )
       ]
 
       menu_item
@@ -289,7 +395,12 @@ defmodule MenuItemTest do
   defp assert_menu_item(menu_item, fields) do
     assert menu_item.name == fields.name
     assert menu_item.description == fields.description
-    assert menu_item.category == fields.category
+    assert menu_item.categories == fields.categories
+    menu_item
+  end
+
+  defp assert_invalid_categories(menu_item) do
+    assert menu_item.categories == []
     menu_item
   end
 
