@@ -5,7 +5,6 @@ defmodule RestaurantTest do
   @default_order_requirement %{minimum_time: 0, minimum_order: 0}
   @default_delivery_requirement %{fee: 0, waive_after: 0}
 
-
   describe "adding & updating restaurant" do
     setup [:restaurant]
 
@@ -36,7 +35,6 @@ defmodule RestaurantTest do
       assert deleted_restaurant.hidden == true
     end
   end
-
 
   describe "adding & updating requirements" do
     setup [:restaurant]
@@ -186,7 +184,7 @@ defmodule RestaurantTest do
     end
   end
 
-  describe "add & deleting menu items to restaurant" do
+  describe "CRUD menu items to restaurant" do
     setup [:restaurant]
 
     test "adding menu item", %{restaurant: restaurant} do
@@ -200,7 +198,11 @@ defmodule RestaurantTest do
         menu_items_fields(%{name: "Pancake", description: "Breakfast cake."}) |> MenuItem.new()
 
       menu_item_4 =
-        menu_items_fields(%{name: "Steak", category: :lunch, description: "T-bone steak."})
+        menu_items_fields(%{name: "Steak", categories: [:lunch, :dinner], description: "T-bone steak."})
+        |> MenuItem.new()
+
+      menu_item_5 =
+        menu_items_fields(%{name: "Steak", categories: [:breakfast, :lunch, :dinner], description: "T-bone steak."})
         |> MenuItem.new()
 
       restaurant
@@ -212,6 +214,8 @@ defmodule RestaurantTest do
       |> assert_menu(menu_item_3)
       |> Restaurant.add_menu_item(menu_item_4)
       |> assert_menu(menu_item_4)
+      |> Restaurant.add_menu_item(menu_item_5)
+      |> assert_menu(menu_item_5)
     end
 
     test "deleting menu item", %{restaurant: restaurant} do
@@ -220,13 +224,13 @@ defmodule RestaurantTest do
       menu_item_2 =
         menu_items_fields(%{
           name: "Omelette",
-          category: :breakfast,
+          categories: [:breakfast, :lunch],
           description: "Egg, butter and cheese."
         })
         |> MenuItem.new()
 
       menu_item_3 =
-        menu_items_fields(%{name: "Steak", category: :lunch, description: "T-bone."})
+        menu_items_fields(%{name: "Steak", categories: [:lunch], description: "T-bone."})
         |> MenuItem.new()
 
       restaurant
@@ -238,6 +242,22 @@ defmodule RestaurantTest do
       |> assert_menu_delete(menu_item_1)
       |> Restaurant.add_menu_item(menu_item_3)
       |> assert_menu(menu_item_3)
+    end
+
+    test "update menu item", %{restaurant: restaurant} do
+      menu_item_1 =
+        menu_items_fields(%{name: "Steak", categories: [:lunch, :dinner], description: "T-bone steak."})
+        |> MenuItem.new()
+
+      menu_item_2 =
+        menu_item_1
+        |> MenuItem.update_menu_item(%{name: "AAA Steak", categories: [:breakfast, :lunch, :dinner], description: "T-bone steak."})
+
+      restaurant
+      |> Restaurant.add_menu_item(menu_item_1)
+      |> assert_menu(menu_item_1)
+      |> Restaurant.update_menu_item(menu_item_1, menu_item_2)
+      |> assert_menu(menu_item_2)
     end
   end
 
@@ -253,6 +273,7 @@ defmodule RestaurantTest do
     assert restaurant.slug == Utility.create_slug(fields.cuisine_name)
     restaurant
   end
+
   defp assert_order_requirements(restaurant, fields) do
     order_requirement = Map.from_struct(restaurant.order_requirement)
     assert Map.equal?(order_requirement, fields) == true
@@ -266,12 +287,12 @@ defmodule RestaurantTest do
   end
 
   defp assert_menu(restaurant, menu_item) do
-    assert get_in(restaurant.menus, [{menu_item.category, menu_item.name}]) == menu_item
+    assert Enum.member?(restaurant.menus, menu_item) == true
     restaurant
   end
 
   defp assert_menu_delete(restaurant, menu_item) do
-    assert get_in(restaurant.menus, [{menu_item.category, menu_item.name}]) == nil
+    assert Enum.member?(restaurant.menus, menu_item) == false
     restaurant
   end
 end

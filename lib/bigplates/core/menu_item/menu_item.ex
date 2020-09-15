@@ -4,8 +4,8 @@ defmodule Bigplates.Core.MenuItem do
   alias Bigplates.Core.MenuItem.{PortionSize, Variant, CuisineType, DietaryType}
 
   defstruct name: nil,
-            category: nil,
             description: nil,
+            categories: [],
             cuisine_type: %CuisineType{},
             dietary_type: %DietaryType{},
             portion_sizes: %{},
@@ -14,8 +14,9 @@ defmodule Bigplates.Core.MenuItem do
             img: [],
             hidden: false
 
-  def new(fields) do
+  def new(%{categories: categories} = fields) do
     struct!(__MODULE__, fields)
+    |> validate_categories()
   end
 
   def update_menu_item(menu_item, fields) do
@@ -103,4 +104,14 @@ defmodule Bigplates.Core.MenuItem do
 
     menu_item |> Map.put(:variants, updated_variants)
   end
+
+  def validate_categories(menu_item) do
+    updated_categories = menu_item.categories
+                          |> Enum.filter(&is_category_valid(&1))
+
+    Map.put(menu_item, :categories, updated_categories)
+  end
+
+  defp is_category_valid(category), do: category in @meal_categories
+
 end

@@ -7,7 +7,7 @@ defmodule Bigplates.Core.Restaurant do
             cuisine_name: nil,
             order_requirement: %OrderRequirement{},
             delivery_requirement: %DeliveryRequirement{},
-            menus: %{},
+            menus: [],
             payouts: [],
             orders: [],
             address: [],
@@ -27,30 +27,21 @@ defmodule Bigplates.Core.Restaurant do
   end
 
   def add_menu_item(restaurant, %MenuItem{} = menu_item) do
-    menus =
-      restaurant.menus
-      |> put_in(
-        [{menu_item.category, menu_item.name}],
-        menu_item
-      )
-
-    restaurant |> Map.put(:menus, menus)
+    updated_menu = [menu_item | restaurant.menus]
+    restaurant |> Map.put(:menus, updated_menu)
   end
 
   def delete_menu_item(restaurant, %MenuItem{} = menu_item) do
-    restaurant.menus
-    |> Enum.empty?()
-    |> case do
-      true ->
-        restaurant
+    updated_menu =
+      restaurant.menus
+      |> List.delete(menu_item)
 
-      false ->
-        updated_menu =
-          restaurant.menus
-          |> Map.delete({menu_item.category, menu_item.name})
+    restaurant |> Map.put(:menus, updated_menu)
+  end
 
-        restaurant |> Map.put(:menus, updated_menu)
-    end
+  def update_menu_item(restaurant, %MenuItem{} = old_menu_item, %MenuItem{} = new_menu_item) do
+    updated_menu = [new_menu_item | List.delete(restaurant.menus, old_menu_item)]
+    restaurant |> Map.put(:menus, updated_menu)
   end
 
   @doc """
@@ -97,7 +88,8 @@ defmodule Bigplates.Core.Restaurant do
   end
 
   def update_delivery_requirement(restaurant, fields) do
-    updated_delivery_requirement = restaurant.delivery_requirement |> DeliveryRequirement.update(fields)
+    updated_delivery_requirement =
+      restaurant.delivery_requirement |> DeliveryRequirement.update(fields)
 
     restaurant |> Map.put(:delivery_requirement, updated_delivery_requirement)
   end
