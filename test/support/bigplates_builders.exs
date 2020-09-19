@@ -13,7 +13,8 @@ defmodule BigplatesBuilder do
         MenuItem,
         MenuItem.PortionSize,
         MenuItem.Variant,
-        MenuItem.VariantOption
+        MenuItem.VariantOption,
+        Order
       }
 
       alias Bigplates.Utility
@@ -22,6 +23,13 @@ defmodule BigplatesBuilder do
   end
 
   alias Bigplates.Core.{Address}
+
+  def order_fields(overrides \\ %{}) do
+    Map.merge(
+      %{},
+      overrides
+    )
+  end
 
   def variant_fields(overrides \\ %{}) do
     Map.merge(
@@ -57,7 +65,7 @@ defmodule BigplatesBuilder do
     Map.merge(
       %{
         name: "Burger",
-        categories: [:breakfast],
+        categories: [:lunch],
         description: "Our famous burger. Customize it to your preference."
       },
       overrides

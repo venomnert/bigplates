@@ -2,10 +2,7 @@ defmodule Bigplates.Core.Admin do
   alias Bigplates.Core.{Address}
 
   """
-    * account_type: [:individual, :company]
-    * company_size:[:small, :medium, :large]
     * notification_preference: [:new_order, :update, :ready, :cancelled_order]
-    * dietary_preference: [:halal, :egg_free, :dairy_free, :vegan, :gluten_free, :nut_free, :vegetarian]
   """
 
   defstruct account_type: nil,
@@ -13,10 +10,6 @@ defmodule Bigplates.Core.Admin do
             first_name: nil,
             last_name: nil,
             phone_number: nil,
-            company_name: nil,
-            company_type: nil,
-            company_size: nil,
-            dietary_preference: [],
             notification_preference: [],
             favourite_menu_items: [],
             address: [],
