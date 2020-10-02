@@ -1,12 +1,9 @@
 defmodule Bigplates.Core.Restaurant do
-  alias Bigplates.Core.Restaurant.{OrderRequirement, DeliveryRequirement}
   alias Bigplates.Core.{MenuItem, Address}
   alias Bigplates.Utility
 
   defstruct name: nil,
             cuisine_name: nil,
-            order_requirement: %OrderRequirement{},
-            delivery_requirement: %DeliveryRequirement{},
             menus: [],
             payouts: [],
             orders: [],
@@ -55,7 +52,7 @@ defmodule Bigplates.Core.Restaurant do
     Add new address to active restaurant
   """
   def add_address(restaurant, %Address{} = address) do
-    updated_address = Address.add_unique_address(restaurant, address)
+    updated_address = Address.add_unique_address(restaurant, address, :address)
 
     restaurant |> Map.put(:address, updated_address)
   end
@@ -64,34 +61,9 @@ defmodule Bigplates.Core.Restaurant do
     Delete existing address from active restaurant
   """
   def delete_address(restaurant, %Address{} = address_to_remove) do
-    updated_address = Address.delete_address(restaurant, address_to_remove)
+    updated_address = Address.delete_address(restaurant, address_to_remove, :address)
 
     restaurant |> Map.put(:address, updated_address)
-  end
-
-  def add_order_requirement(restaurant, fields) do
-    order_requirement = OrderRequirement.new(fields)
-
-    restaurant |> Map.put(:order_requirement, order_requirement)
-  end
-
-  def update_order_requirement(restaurant, fields) do
-    updated_order_requirement = restaurant.order_requirement |> OrderRequirement.update(fields)
-
-    restaurant |> Map.put(:order_requirement, updated_order_requirement)
-  end
-
-  def add_delivery_requirement(restaurant, fields) do
-    delivery_requirement = DeliveryRequirement.new(fields)
-
-    restaurant |> Map.put(:delivery_requirement, delivery_requirement)
-  end
-
-  def update_delivery_requirement(restaurant, fields) do
-    updated_delivery_requirement =
-      restaurant.delivery_requirement |> DeliveryRequirement.update(fields)
-
-    restaurant |> Map.put(:delivery_requirement, updated_delivery_requirement)
   end
 
   defp add_slug(restaurant, fields) do

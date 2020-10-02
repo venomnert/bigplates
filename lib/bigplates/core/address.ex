@@ -51,14 +51,25 @@ defmodule Bigplates.Core.Address do
     }
   end
 
-  def add_unique_address(main_entity, %__MODULE__{} = address) do
+  def add_unique_address(main_entity, %__MODULE__{} = address, :address) do
     [address]
     |> Enum.concat(main_entity.address)
     |> Enum.uniq_by(&get_address_hash(&1))
   end
 
-  def delete_address(main_entity, %__MODULE__{} = address_to_remove) do
+  def add_unique_address(main_entity, %__MODULE__{} = address, :billing_address) do
+    [address]
+    |> Enum.concat(main_entity.billing_address)
+    |> Enum.uniq_by(&get_address_hash(&1))
+  end
+
+  def delete_address(main_entity, %__MODULE__{} = address_to_remove, :address) do
     main_entity.address
+    |> Enum.reject(&is_address_hash_equal(&1, address_to_remove))
+  end
+
+  def delete_address(main_entity, %__MODULE__{} = address_to_remove, :billing_address) do
+    main_entity.billing_address
     |> Enum.reject(&is_address_hash_equal(&1, address_to_remove))
   end
 
