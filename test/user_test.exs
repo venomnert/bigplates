@@ -236,6 +236,58 @@ defmodule UserTest do
     end
   end
 
+  describe "adding & removing billing address to user" do
+    setup [:user]
+
+    test "Add single address to user", %{user: user} do
+      new_address =
+        address_fields()
+        |> Address.new()
+
+      user_address = user |> User.add_billing_address(new_address) |> Map.get(:billing_address)
+
+      assert Enum.empty?(user_address) == false
+    end
+
+    test "Add multiple address to user", %{user: user} do
+      [first_address, second_address] = address_generator(2)
+
+      user_addresses =
+        user
+        |> User.add_billing_address(first_address)
+        |> User.add_billing_address(second_address)
+        |> Map.get(:billing_address)
+
+      assert length(user_addresses) == 2
+    end
+
+    test "Remove existing address from user", %{user: user} do
+      new_address = Address.new(address_fields())
+      user_address = user |> User.add_billing_address(new_address)
+
+      assert Enum.empty?(user_address.billing_address) == false
+
+      removed_user_address = user_address |> User.delete_billing_address(new_address)
+
+      assert Enum.empty?(removed_user_address.billing_address) == true
+    end
+
+    test "Remove unknown address from user", %{user: user} do
+      [first_address] = address_generator(1)
+
+      unknown_address =
+        address_fields(%{street: "1213 Chimpunk", postal_code: "M1V2L4"}) |> Address.new()
+
+      user_address =
+        user
+        |> User.add_billing_address(first_address)
+        |> User.delete_billing_address(unknown_address)
+        |> Map.get(:billing_address)
+
+      assert Enum.empty?(user_address) == false
+    end
+  end
+
   defp user(context) do
     user = User.new(create_user())
     {:ok, Map.put(context, :user, user)}

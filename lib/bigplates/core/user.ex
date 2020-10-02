@@ -16,6 +16,7 @@ defmodule Bigplates.Core.User do
             notification_preference: [],
             favourite_menu_items: [],
             address: [],
+            billing_address: [],
             payments: [],
             orders: [],
             hidden: false
@@ -99,7 +100,7 @@ defmodule Bigplates.Core.User do
     Add new address to active users
   """
   def add_address(user, %Address{} = address) do
-    updated_address = Address.add_unique_address(user, address)
+    updated_address = Address.add_unique_address(user, address, :address)
 
     user |> Map.put(:address, updated_address)
   end
@@ -108,9 +109,24 @@ defmodule Bigplates.Core.User do
     Delete existing address from active users
   """
   def delete_address(user, %Address{} = address_to_remove) do
-    updated_address = Address.delete_address(user, address_to_remove)
+    updated_address = Address.delete_address(user, address_to_remove, :address)
 
     user |> Map.put(:address, updated_address)
+  end
+
+  def add_billing_address(user, %Address{} = address) do
+    updated_address = Address.add_unique_address(user, address, :billing_address)
+
+    user |> Map.put(:billing_address, updated_address)
+  end
+
+  @doc """
+    Delete existing address from active users
+  """
+  def delete_billing_address(user, %Address{} = address_to_remove) do
+    updated_address = Address.delete_address(user, address_to_remove, :billing_address)
+
+    user |> Map.put(:billing_address, updated_address)
   end
 
   # def add_order(user, order) do
