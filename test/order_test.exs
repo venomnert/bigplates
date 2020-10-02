@@ -2,6 +2,9 @@ defmodule OrderTest do
   use ExUnit.Case
   use BigplatesBuilder
 
+  @default_order_requirement %{minimum_time: 0, minimum_order: 0}
+  @default_delivery_requirement %{fee: 0, waive_after: 0}
+
   describe "CRUD simple menu items" do
     test "Add simple menu items" do
       order_1 = order_fields()
@@ -43,12 +46,21 @@ defmodule OrderTest do
     end
   end
 
+  defp order(context) do
+    order = order_fields() |> Order.new()
+
+    {:ok, Map.put(context, :order, order)}
+  end
+
+
   defp assert_menu_item(order, menu_item) do
     assert Enum.member?(order.total_items, menu_item) == true
     order
   end
+
   defp assert_menu_item_removal(order, menu_item) do
     assert Enum.member?(order.total_items, menu_item) == false
     order
   end
+
 end
