@@ -8,28 +8,28 @@ defmodule Bigplates.Core.Order do
 
   defstruct user: nil,
             address: nil,
+            meal_categories: nil,
             event: nil,
             num_of_guest: nil,
-            delivery_total: nil,
-            sub_total: nil,
+            item_total: 0,
+            total_items: %{},
             order_requirement: %OrderRequirement{},
             delivery_requirement: %DeliveryRequirement{},
             delivery_charge: nil,
-            tax_total: nil,
-            per_person_total: nil,
-            tip_rate: nil,
-            tip_total: nil,
+            delivery_total: nil,
+            sub_total: 0,
+            tax_total: 0,
+            per_person_total: 0,
+            tip_rate: 0,
+            tip_total: 0,
             cutlery: false,
             order_date: nil,
-            status: nil,
-            valid: false,
             date_ordered: nil,
             delivery_date: nil,
             delivery_time: nil,
             delivery_time_window_minutes: [],
-            transactions: [],
-            item_total: nil,
-            total_items: %{}
+            status: nil,
+            valid: false
 
   def new(fields) do
     struct!(__MODULE__, fields)
@@ -39,9 +39,10 @@ defmodule Bigplates.Core.Order do
     new_total_items =
       order
       |> Map.get(:total_items)
-      |> Map.update(order_item, 1, &(&1+ 1))
+      |> Map.update(order_item, 1, &(&1 + 1))
 
     Map.put(order, :total_items, new_total_items)
+    |> process_order_action(order_item)
   end
 
   def reduce_order_item(order, order_item) do
@@ -52,6 +53,7 @@ defmodule Bigplates.Core.Order do
 
     order
     |> Map.put(:total_items, new_order_items)
+    |> process_order_action(order_item)
   end
 
   def remove_order_item(order, order_item) do
@@ -61,16 +63,17 @@ defmodule Bigplates.Core.Order do
       |> Map.delete(order_item)
 
     Map.put(order, :total_items, new_total_items)
+    |> process_order_action(order_item)
   end
 
-  def process_order_action(order, menu_item) do
+  def process_order_action(order, {_restaurant, menu_item} = _order_item) do
     order
-    |> validate_order(menu_item)
     |> calculate_total_item()
-    |> calculate_sub_total()
+    # |> calculate_sub_total()
+    # |> calculate_tax_total()
+    # |> calculate_per_person_total()
+    # |> calculate_tip_total()
   end
-
-  def validate_order(order, menu_item), do: order
 
   def add_order_requirement(order, fields) do
     order_requirement = OrderRequirement.new(fields)
@@ -97,14 +100,24 @@ defmodule Bigplates.Core.Order do
     order |> Map.put(:delivery_requirement, updated_delivery_requirement)
   end
 
-  def calculate_total_item(%{valid: true} = order), do: order
-  def calculate_total_item(%{valid: false} = order), do: order
-
-  def calculate_sub_total(%{valid: true} = order), do: order
-  def calculate_sub_total(%{valid: false} = order), do: order
-
   defp check_and_reduce(qty) when qty == 0, do: :pop
   defp check_and_reduce(qty) when qty > 0, do: {qty, qty - 1}
 
+  def calculate_total_item(%{total_items: total_items} = order) do
+    Enum.empty?(total_items)
+    |> case do
+      true -> Map.put(order, :item_total, 0)
+      false ->
+        item_total = order
+                |> Map.get(:total_items)
+                |> Map.values()
+                |> Enum.reduce(0, &(&1 + &2))
 
+        Map.put(order, :item_total, item_total)
+    end
+  end
+
+  def calculate_sub_total() do
+    
+  end
 end
